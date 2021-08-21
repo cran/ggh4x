@@ -7,7 +7,7 @@
 #' of a geom. The tick marks probably best suit log10 transformations.
 #'
 #' @inheritParams guide_axis_minor
-#' @param prescaled A \code{logical} of length one, indicating wether the data
+#' @param prescaled A \code{logical} of length one, indicating whether the data
 #'   has been manually rescaled (\code{TRUE}) or the scale takes care of the
 #'   transformation (\code{FALSE}).
 #' @param base When this is provided, the guide takes this as the base for the
@@ -54,8 +54,11 @@ guide_axis_logticks <- function(
   prescaled = FALSE,
   trunc_lower = NULL,
   trunc_upper = NULL,
+  colour = NULL,
+  color = NULL,
   base = waiver()
 ) {
+  colour <- color %||% colour
   check_trunc_arg(trunc_lower, trunc_upper)
   structure(list(
     title = title,
@@ -69,9 +72,10 @@ guide_axis_logticks <- function(
     prescaled = prescaled,
     trunc_lower = trunc_lower,
     trunc_upper = trunc_upper,
+    colour = colour,
     base = base
   ), class = c("guide", "axis_logticks", "axis_minor",
-               "axis_truncated", "axis"))
+               "axis_ggh4x", "axis"))
 }
 
 # Internals ---------------------------------------------------------------

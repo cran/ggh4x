@@ -50,8 +50,11 @@ guide_dendro <- function(
   label = TRUE,
   trunc_lower = NULL,
   trunc_upper = NULL,
+  colour = NULL,
+  color = NULL,
   dendro = waiver()
 ) {
+  colour <- color %||% colour
   check_trunc_arg(trunc_lower, trunc_upper)
   structure(
     list(title = title,
@@ -63,9 +66,10 @@ guide_dendro <- function(
          label = label,
          trunc_lower = trunc_lower,
          trunc_upper = trunc_upper,
+         colour = colour,
          dendro = dendro,
          name = "axis"),
-    class = c("guide", "dendroguide", "axis_truncated", "axis")
+    class = c("guide", "dendroguide", "axis_ggh4x", "axis")
   )
 }
 
@@ -142,38 +146,39 @@ guide_transform.dendroguide <- function(guide, coord, panel_params) {
 #' @noRd
 guide_gengrob.dendroguide <- function(guide, theme) {
   aesthetic <- names(guide$key)[!grepl("^\\.", names(guide$key))][1]
+  key <- guide$key
+  key$.label <- guide$dendro$labels$label
 
   draw_dendroguide(
-    break_positions = guide$key[[aesthetic]],
-    break_labels = guide$dendro$labels$label,
+    key = key,
     axis_position = guide$position,
     theme = theme,
     check.overlap = guide$check.overlap,
     n.dodge = guide$n.dodge,
     dendro = guide$dendro$segments,
-    trunc = guide$trunc
+    trunc = guide$trunc,
+    colour = guide$colour
   )
 }
 
 # Drawing -----------------------------------------------------------------
 
 draw_dendroguide <- function(
-  break_positions, break_labels, axis_position, theme,
+  key, axis_position, theme,
   check.overlap = FALSE, n.dodge = 1, dendro = NULL,
-  trunc
+  trunc, colour = NULL
 ) {
   axis_position <- match.arg(substr(axis_position, 1, 1),
                              c("t", "b", "r", "l"))
-  aes <- if (axis_position %in% c("t", "b")) "x" else "y"
 
-  elements <- build_axis_elements(axis_position, angle = NULL, theme)
+  elements <- build_axis_elements(axis_position, angle = NULL, theme, colour)
 
   params <- setup_axis_params(axis_position)
   params$labels_first <- !params$labels_first
 
   line_grob <- build_trunc_axis_line(elements$line, params, trunc)
 
-  if ({n_breaks <- length(break_positions)} == 0) {
+  if ({n_breaks <- nrow(key)} == 0) {
     out <- grid::gTree(
       children = grid::gList(line_grob),
       width = grid::grobWidth(line_grob),
@@ -184,9 +189,7 @@ draw_dendroguide <- function(
   }
 
   label_grobs <- build_axis_labels(
-    elements,
-    labels = break_labels,
-    position = break_positions,
+    elements, key = key,
     dodge = n.dodge, check.overlap = check.overlap, params = params
   )
 

@@ -1,3 +1,5 @@
+# Constructor -------------------------------------------------------------
+
 #' Apply function to position coordinates
 #'
 #' The function xy stat applies a function to the x- and y-coordinates of a
@@ -11,7 +13,7 @@
 #'   \code{y} positions respectively.
 #' @param argx,argy A named \code{list} containing arguments to the \code{funx},
 #'   and \code{funy} function calls.
-#' @param crop_other A \code{logical} of length one; wether the other data
+#' @param crop_other A \code{logical} of length one; whether the other data
 #'   should be fitted to the length of \code{x} and \code{y} (default:
 #'   \code{TRUE}). Useful to set to \code{FALSE} when \code{funx} or \code{funy}
 #'   calculate summaries of length one that need to be recycled.
@@ -101,11 +103,12 @@ stat_midpoint <- function(...,
   stat_funxy(..., funx = fun, funy = fun, argx = argx, argy = argy)
 }
 
+# ggproto -----------------------------------------------------------------
+
 #' @usage NULL
 #' @format NULL
 #' @export
 #' @rdname ggh4x_extensions
-#' @importFrom vctrs vec_recycle_common
 StatFunxy <- ggproto(
   "StatFunxy", Stat,
   required_aes = c("x", "y"),
@@ -132,6 +135,6 @@ StatFunxy <- ggproto(
     # Combine data
     data <- c(other, list(x = x, y = y))
     data <- do.call(vec_recycle_common, data)
-    list2df(data)
+    .int$new_data_frame(data)
   }
 )

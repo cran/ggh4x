@@ -1,10 +1,11 @@
 #' @keywords internal
 "_PACKAGE"
 
-#' @importFrom stats setNames rt dcauchy dnorm dunif
+#' @importFrom stats setNames rt dcauchy dnorm dunif ccf coef lm
 #' @importFrom utils head tail getFromNamespace
-#' @importFrom vctrs new_data_frame
-#' @importFrom rlang abort warn
+#' @importFrom rlang abort warn eval_tidy enquo as_label arg_match0 as_function
+#'   is_formula `%||%`
+#' @import vctrs
 #' @import ggplot2
 #' @import scales
 #' @import grid

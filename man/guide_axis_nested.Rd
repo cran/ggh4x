@@ -14,6 +14,8 @@ guide_axis_nested(
   delim = waiver(),
   trunc_lower = NULL,
   trunc_upper = NULL,
+  colour = NULL,
+  color = NULL,
   extend = 0.5
 )
 }
@@ -66,6 +68,14 @@ mapped positions as \code{numeric}.
 \item A \code{unit} object.
 }}
 
+\item{colour}{A \code{character(1)} with a valid colour for colouring the
+axis text, axis ticks and axis line. Overrules the colour assigned by the
+theme.}
+
+\item{color}{A \code{character(1)} with a valid colour for colouring the
+axis text, axis ticks and axis line. Overrules the colour assigned by the
+theme.}
+
 \item{extend}{A \code{numeric} of length 1 indicating how much to extend
 nesting lines relative to the smallest difference in break positions.}
 }
@@ -74,7 +84,7 @@ A \emph{axis_nested} guide class object.
 }
 \description{
 Discrete position scales containing interacting factors can be visualised
-more clearly with a nested axis guide. Nested axis guides seperate labels
+more clearly with a nested axis guide. Nested axis guides separate labels
 based on a delimiter and groups identical later labels, indicating the
 grouping with a line spanning the earlier labels.
 }
@@ -113,6 +123,7 @@ ggplot(mpg, aes(interaction(cyl, class), hwy)) +
 
 Other axis-guides: 
 \code{\link{guide_axis_logticks}()},
+\code{\link{guide_axis_manual}()},
 \code{\link{guide_axis_minor}()},
 \code{\link{guide_axis_truncated}()}
 }

@@ -1,9 +1,12 @@
 # User function -----------------------------------------------------------
 
-#' Axis guide with truncated line.
+#' Axis guide with truncated line
 #'
 #' This axis guide is similar to the normal axis guides for position scales, but
-#' can shorten the axis line that is being drawn.
+#' can shorten the axis line that is being drawn. The `guide_axis_colour()`
+#' function is the same but with different defaults for the truncation that do
+#' not truncate the axis. Axis truncation and recolouring is supported
+#' throughout axes in ggh4x.
 #'
 #' @inheritParams ggplot2::guide_axis
 #' @param trunc_lower,trunc_upper The lower and upper range of the truncated
@@ -14,8 +17,11 @@
 #'   mapped positions as `numeric`.
 #' * A `numeric` value in data units for the lower and upper boundaries.
 #' * A `unit` object.
+#' @param colour,color A `character(1)` with a valid colour for colouring the
+#'   axis text, axis ticks and axis line. Overrules the colour assigned by the
+#'   theme.
 #'
-#' @return An *axis_truncated* guide class object.
+#' @return An *axis_ggh4x* guide class object.
 #' @export
 #' @family axis-guides
 #' @md
@@ -45,16 +51,23 @@
 #'   trunc_lower = function(x) {x - 0.2},
 #'   trunc_upper = function(x) {x + 0.2}
 #' ))
+#'
+#' # Recolouring the axes outside the theme
+#' p + guides(x = guide_axis_colour(colour = "red"),
+#'            y = guide_axis_colour(colour = "blue"))
 guide_axis_truncated <- function(
   title = waiver(),
   check.overlap = FALSE,
   angle = NULL,
   n.dodge = 1,
   order = 0,
+  colour = NULL,
+  color = NULL,
   trunc_lower = min,
   trunc_upper = max,
   position = waiver()
 ) {
+  colour <- color %||% colour
   check_trunc_arg(trunc_lower, trunc_upper)
   structure(
     list(
@@ -65,19 +78,58 @@ guide_axis_truncated <- function(
       order = order,
       trunc_lower = trunc_lower,
       trunc_upper = trunc_upper,
+      colour = colour,
       position = position,
       available_aes = c("x", "y"),
       name = "axis"
     ),
-    class = c("guide", "axis_truncated", "axis")
+    class = c("guide", "axis_ggh4x", "axis")
   )
 }
+
+#' @rdname guide_axis_truncated
+#' @export
+guide_axis_colour <- function(
+  title = waiver(),
+  check.overlap = FALSE,
+  angle = NULL,
+  n.dodge = 1,
+  order = 0,
+  colour = NULL,
+  color = NULL,
+  trunc_lower = NULL,
+  trunc_upper = NULL,
+  position = waiver()
+) {
+  colour <- color %||% colour
+  check_trunc_arg(trunc_lower, trunc_upper)
+  structure(
+    list(
+      title = title,
+      check.overlap = check.overlap,
+      angle = angle,
+      n.dodge = n.dodge,
+      order = order,
+      trunc_lower = trunc_lower,
+      trunc_upper = trunc_upper,
+      colour = colour,
+      position = position,
+      available_aes = c("x", "y"),
+      name = "axis"
+    ),
+    class = c("guide", "axis_ggh4x", "axis")
+  )
+}
+
+#' @rdname guide_axis_truncated
+#' @export
+guide_axis_color <- guide_axis_colour
 
 # Internals ---------------------------------------------------------------
 
 #' @export
-#' @method guide_train axis_truncated
-guide_train.axis_truncated <- function(guide, scale, aesthetic = NULL) {
+#' @method guide_train axis_ggh4x
+guide_train.axis_ggh4x <- function(guide, scale, aesthetic = NULL) {
   aesthetic <- aesthetic %||% scale$aesthetics[1]
   guide <- NextMethod()
   guide <- truncate_guide(guide, scale, aesthetic)
@@ -85,50 +137,48 @@ guide_train.axis_truncated <- function(guide, scale, aesthetic = NULL) {
 }
 
 #' @export
-#' @method guide_transform axis_truncated
-guide_transform.axis_truncated <- function(guide, coord, panel_params) {
+#' @method guide_transform axis_ggh4x
+guide_transform.axis_ggh4x <- function(guide, coord, panel_params) {
   guide <- NextMethod()
   guide$trunc <- transform_truncated(guide$trunc, coord, panel_params)
   return(guide)
 }
 
 #' @export
-#' @method guide_gengrob axis_truncated
-guide_gengrob.axis_truncated <- function(guide, theme) {
+#' @method guide_gengrob axis_ggh4x
+guide_gengrob.axis_ggh4x <- function(guide, theme) {
   aesthetic <- names(guide$key)[!grepl("^\\.", names(guide$key))][1]
-  draw_axis_truncated(
-    break_positions = guide$key[[aesthetic]],
-    break_labels = guide$key$.label,
+  draw_axis_ggh4x(
+    key = guide$key,
     axis_position = guide$position,
     theme = theme,
     check.overlap = guide$check.overlap,
     angle = guide$angle,
     n.dodge = guide$n.dodge,
-    trunc = guide$trunc
+    trunc = guide$trunc,
+    colour = guide$colour
   )
 }
 
 # Helpers -----------------------------------------------------------------
 
-draw_axis_truncated <- function(
-  break_positions,
-  break_labels,
+draw_axis_ggh4x <- function(
+  key,
   axis_position,
   theme = theme,
   check.overlap,
   angle = NULL,
   n.dodge = 1,
-  trunc
+  trunc,
+  colour = NULL
 ) {
   axis_position <- match.arg(substr(axis_position, 1, 1),
                              c("t", "b", "r", "l"))
-  aes <- if (axis_position %in% c("t", "b")) "x" else "y"
-
-  elements <- build_axis_elements(axis_position, angle, theme)
+  elements <- build_axis_elements(axis_position, angle, theme, colour)
   params <- setup_axis_params(axis_position)
   line_grob <- build_trunc_axis_line(elements$line, params, trunc)
 
-  if ({n_breaks <- length(break_positions)} == 0) {
+  if (nrow(key) == 0) {
     out <- gTree(
       children = gList(line_grob),
       width    = grobWidth(line_grob),
@@ -139,16 +189,14 @@ draw_axis_truncated <- function(
   }
 
   label_grobs <- build_axis_labels(
-    elements,
-    labels = break_labels,
-    position = break_positions,
+    elements, key = key,
     dodge = n.dodge, check.overlap = check.overlap, params = params
   )
 
   # Setup ticks
   sizes <- unit.c(elements$tick_length)
   tick_grob <- build_axis_ticks(elements$ticks, sizes,
-                                break_positions, params)
+                                key[[params$aes]], params)
   elements$tick_length <- max(sizes)
   assemble_axis_grobs(
     ticks = tick_grob, labels = label_grobs,
@@ -207,6 +255,9 @@ truncate_guide <- function(guide, scale, aesthetic) {
 }
 
 axis_truncate <- function(breaks, trunc, scale, type = "lower") {
+  if (rlang::is_formula(trunc)) {
+    trunc <- rlang::as_function(trunc)
+  }
   if (is.null(trunc)) {
     x <- unit(switch(
       type,
@@ -225,7 +276,11 @@ axis_truncate <- function(breaks, trunc, scale, type = "lower") {
     }
     return(x)
   } else { # Expecting input in dataspace here
-    x <- scale$scale$trans$transform(trunc)
+    if (scale$is_discrete()) {
+      x <- scale$scale$map(trunc)
+    } else {
+      x <- scale$scale$trans$transform(trunc)
+    }
     return(x)
   }
 }
@@ -239,3 +294,4 @@ check_trunc_arg <- function(lower, upper) {
     }
   }
 }
+

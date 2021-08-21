@@ -1,6 +1,10 @@
 test_that("try_require returns error when package is absent", {
-  expect_error(try_require("nonsense", "test"),
-               "Please install and try again")
+  if (utils::packageVersion("rlang") >= package_version("0.4.10")) {
+    text <- "The `nonsense` package is required"
+  } else {
+    text <- "Please install and try again"
+  }
+  expect_error(try_require("nonsense", "test"), text)
 })
 
 test_that("try_require loads package namespace", {
@@ -16,18 +20,17 @@ test_that("try_require loads package namespace", {
   expect_false("package:fitdistrplus" %in% search())
 })
 
-test_that("%||% does what it is supposed to do", {
-  x <- NULL
-  y <- 10
-  z <- 5
-  expect_equal(x %||% y, 10)
-  expect_equal(z %||% y, 5)
-})
-
 test_that("function grabber grabs functions", {
   x <- .grab_ggplot_internals()
   classes <- table(sapply(x, class))
   expect_gt(classes["function"], 10)
+})
+
+test_that("center_limits centers limits", {
+  f <- center_limits()
+  expect_equal(f(c(-1, 3)), c(-3, 3))
+  f <- center_limits(1)
+  expect_equal(f(c(-1, 3)), c(-1, 3))
 })
 
 test_that("weave_factors combines factors", {

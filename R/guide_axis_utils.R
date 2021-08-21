@@ -1,4 +1,6 @@
-build_axis_elements <- function(axis_position = "b", angle = NULL, theme) {
+build_axis_elements <- function(
+  axis_position = "b", angle = NULL, theme, colour = NULL
+) {
   aesthetic <- if (axis_position %in% c("t", "b")) "x" else "y"
   axis_position <- match.arg(axis_position, c("top", "bottom", "left", "right"))
 
@@ -15,6 +17,15 @@ build_axis_elements <- function(axis_position = "b", angle = NULL, theme) {
     elements$label$hjust <- lab_overrides$hjust %||% elements$label$hjust
     elements$label$vjust <- lab_overrides$vjust %||% elements$label$vjust
   }
+  if (!is.null(colour)) {
+    elements <- lapply(elements, function(el) {
+      if ("colour" %in% names(el)) {
+        el$colour <- colour
+      }
+      return(el)
+    })
+  }
+
   elements
 }
 
@@ -25,32 +36,52 @@ build_axis_line <- function(element, params) {
 }
 
 build_axis_labels <- function(
-  elements, labels, position, dodge = 1, check.overlap = FALSE, params
+  elements, key, dodge = 1, check.overlap = FALSE, params
 ) {
-  n_breaks <- length(position)
-  if (n_breaks == 0) {
+  if ({n_breaks <- nrow(key)} == 0) {
     return(list(zeroGrob()))
   }
 
-  # Validate labels
-  if (is.list(labels)) {
-    if (any(vapply(labels, is.language, logical(1)))) {
-      labels <- do.call(expression, labels)
+  if (is.list(key$.label)) {
+    if (any(vapply(key$.label, is.language, logical(1)))) {
+      key$.label <- do.call(expression, key$.label)
     } else {
-      labels <- unlist(labels)
+      key$.label <- unlist(key$.label)
     }
   }
 
-  dodge_pos <- rep(seq_len(dodge), length.out = n_breaks)
+  dodge_pos  <- rep(seq_len(dodge), length.out = n_breaks)
   dodge_idxs <- split(seq_len(n_breaks), dodge_pos)
-  label_grobs <- lapply(dodge_idxs, function(idx) {
-    .int$draw_axis_labels(
-      break_positions = position[idx],
-      break_labels = labels[idx],
-      label_element = elements$label,
-      is_vertical = params$vertical,
-      check.overlap = check.overlap
+
+  if (params$vertical) {
+    pos_dim <- "y"
+    margin_name <- "margin_x"
+  } else {
+    pos_dim <- "x"
+    margin_name <- "margin_y"
+  }
+
+  lapply(dodge_idxs, function(idx) {
+    subkey <- key[idx, , drop = FALSE]
+    if (check.overlap) {
+      priority <- .int$axis_label_priority(n)
+      subkey   <- subkey[priority, , drop = FALSE]
+    }
+    breaks <- subkey[[params$aes]]
+    n <- length(breaks)
+    labs <- subkey$.label
+
+    args <- setNames(
+      list(elements$label, labs, breaks, TRUE, check.overlap,
+           # Following can all be NULL
+           subkey$.family, subkey$.face, subkey$.colour, subkey$.size,
+           subkey$.hjust, subkey$.vjust, subkey$.lineheight,
+           params$margin),
+      c("element", "label", pos_dim, margin_name, "check.overlap",
+        "family", "face", "colour", "size", "hjust", "vjust", "lineheight",
+        "margin")
     )
+    do.call(element_grob, args)
   })
 }
 
@@ -59,9 +90,15 @@ build_axis_ticks <- function(element, length, position, params) {
   pos <- unit(c(params$pos, params$pos + (params$tick_dir * 1)), "npc")
   pos <- rep(pos[params$tick_ord], times = n_breaks)
 
-  args <- list(element, unit(rep(position, each = 2), "native"),
-               pos, rep(2, times = n_breaks))
-  names(args) <- c("element", params$aes, params$non_aes, "id.lengths")
+  position <- rep(position, each = 2)
+  if (!is.unit(position)) {
+    position <- unit(position, "native")
+  }
+
+  args <- setNames(
+    list(element, position, pos, rep(2, times = n_breaks)),
+    c("element", params$aes, params$non_aes, "id.lengths")
+  )
 
   do.call(element_grob, args)
 }

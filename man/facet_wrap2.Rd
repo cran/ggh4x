@@ -16,7 +16,9 @@ facet_wrap2(
   as.table = TRUE,
   drop = TRUE,
   dir = "h",
-  strip.position = "top"
+  strip.position = "top",
+  trim_blank = TRUE,
+  strip = strip_vanilla()
 )
 }
 \arguments{
@@ -32,19 +34,34 @@ or a character vector, \code{c("a", "b")}.}
 
 \item{ncol}{Number of rows and columns.}
 
-\item{scales}{Should scales be fixed (\code{"fixed"}, the default),
-free (\code{"free"}), or free in one dimension (\code{"free_x"},
-\code{"free_y"})?}
+\item{scales}{A \code{character(1)} or \code{logical(1)} whether scales are shared
+across facets or allowed to vary. One of the following:
+\describe{
+\item{\code{"fixed"} or \code{FALSE}}{Scales are shared across all facets
+(default).}
+\item{\code{"free_x"}}{x-scales are allowed to vary.}
+\item{\code{"free_y"}}{y-scales are allowed to vary.}
+\item{\code{"free"} or \code{TRUE}}{Both scales can vary}
+}}
 
-\item{axes}{A \code{character} where axes should be drawn. Either
-\code{"margins"} (default), \code{"rows"}, \code{"cols"} or \code{"full"}.
-Only applies when the scale is free through the \code{scales} argument.}
+\item{axes}{A \code{character(1)} or \code{logical(1)} where axes should be drawn. One
+of the following:
+\describe{
+\item{\code{"margins"} or \code{FALSE}}{Only draw axes at the outer margins
+(default).}
+\item{\code{"x"}}{Draw axes at the outer margins and all inner x-axes too.}
+\item{\code{"y"}}{Draw axes at the outer margins and all inner y-axes too.}
+\item{\code{"all"} or \code{TRUE}}{Draw the axes for every panel.}
+}}
 
-\item{remove_labels}{A \code{character} denoting what labels should be
-removed when axes are repeated and redundant. Either \code{"none"}
-(default), \code{"rows"}, \code{"cols"} or \code{"all"}. Only applies to
-relevant position guides included with the \code{axes} argument when scales
-are fixed.}
+\item{remove_labels}{A \code{character(1)} or \code{logical(1)} determining whether
+axis text is displayed at inner panels. One of the following:
+\describe{
+\item{\code{"none"} or \code{FALSE}}{Display axis text at all axes (default).}
+\item{\code{"x"}}{Display axis text at outer margins and all inner y-axes.}
+\item{\code{"y"}}{Display axis text at outer margins and all inner x-axes.}
+\item{\code{"all"} or \code{TRUE}}{Only display axis text at the outer margins.}
+}}
 
 \item{shrink}{If \code{TRUE}, will shrink scales to fit output of
 statistics, not raw data. If \code{FALSE}, will be range of raw data
@@ -76,6 +93,14 @@ for vertical.}
 the plot. Using \code{strip.position} it is possible to place the labels on
 either of the four sides by setting \code{strip.position = c("top",
   "bottom", "left", "right")}}
+
+\item{trim_blank}{A \code{logical(1)}. When \code{TRUE} (default), does not draw rows
+and columns containing no panels. When \code{FALSE}, the \code{nrow} and \code{ncol}
+arguments are taken literally, even when there are more than needed to
+fit all panels.}
+
+\item{strip}{An object created by a call to a strip function, such as
+\code{\link[=strip_vanilla]{strip_vanilla}}.}
 }
 \value{
 A \code{Facet} ggproto object that can be added to a plot.
@@ -88,19 +113,21 @@ extra options on axis drawing when scales are fixed.
 p <- ggplot(mpg, aes(displ, hwy)) + geom_point()
 
 # Repeat all axes for every facet
-p + facet_wrap2(vars(class), axes = "full")
+p + facet_wrap2(vars(class), axes = "all")
 
 # Repeat only y-axes
-p + facet_wrap2(vars(class), axes = "cols")
+p + facet_wrap2(vars(class), axes = "y")
 
 # Repeat axes without labels
-p + facet_wrap2(vars(class), axes = "full", remove_labels = "all")
+p + facet_wrap2(vars(class), axes = "all", remove_labels = "all")
 
 # Repeat axes without x-axis labels
-p + facet_wrap2(vars(class), axes = "full", remove_labels = "rows")
+p + facet_wrap2(vars(class), axes = "all", remove_labels = "x")
 }
 \seealso{
 Other facetting functions: 
+\code{\link{facet_grid2}()},
+\code{\link{facet_manual}()},
 \code{\link{facet_nested_wrap}()},
 \code{\link{facet_nested}()}
 }

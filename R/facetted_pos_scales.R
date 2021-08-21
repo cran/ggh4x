@@ -171,9 +171,23 @@ validate_facetted_scale <- function(x, aes = "x") {
 #' @keywords internal
 ggplot_add.facetted_pos_scales <- function(object, plot, object_name) {
 
-  if (is.null(object$x) & is.null(object$y)) {
+  empty_x <- vapply(object$x, is.null, logical(1))
+  empty_y <- vapply(object$y, is.null, logical(1))
+  if (all(empty_x) && all(empty_y)) {
     return(plot)
   }
+  if (startsWith(class(plot$facet)[[1]], "FreeScaled")) {
+    # We have already initialised facetted position scales
+    # Just need to update the new scales
+    if (!all(empty_x)) {
+      plot$facet$new_x_scales <- object$x
+    }
+    if (!all(empty_y)) {
+      plot$facet$new_y_scales <- object$y
+    }
+    return(plot)
+  }
+
   # Check if we can overide core functions
   valid_init <- identical(body(environment(Facet$init_scales)$f),
                           body(environment(plot$facet$init_scales)$f))
@@ -183,12 +197,20 @@ ggplot_add.facetted_pos_scales <- function(object, plot, object_name) {
                             body(environment(plot$facet$finish_data)$f))
 
   if (!all(c(valid_init, valid_train, valid_finish))) {
-    warning("Unknown facet, overriding facetted scales may be unstable.",
+    warning("Unknown facet: overriding facetted scales may be unstable.",
             call. = FALSE)
   }
 
   # Copy facet
   oldfacet <- plot$facet
+
+  free <- plot$facet$params$free
+  if (!is.null(free$x) && sum(!empty_x) > 1 && !free$x) {
+    warn("Attempting to add facetted x scales, while x scales are not free.")
+  }
+  if (!is.null(free$y) && sum(!empty_y) > 1 && !free$y) {
+    warn("Attempting to add facetted y scales, while y scales are not free.")
+  }
 
   # Reconstitute new facet
   newfacet <- ggproto(
@@ -300,8 +322,8 @@ finish_data_individual <- function(data, layout, x_scales, y_scales, params) {
     yidx <- layout[panel_id, "SCALE_Y"]
 
     # Decide what variables need to be transformed
-    y_vars <- intersect(y_scales[[yidx]]$aesthetics, names(dat))
-    x_vars <- intersect(x_scales[[xidx]]$aesthetics, names(dat))
+    y_vars <- should_transform(y_scales[[yidx]], names(dat))
+    x_vars <- should_transform(x_scales[[xidx]], names(dat))
 
     # Transform variables by appropriate scale
     for (j in y_vars) {
@@ -316,4 +338,14 @@ finish_data_individual <- function(data, layout, x_scales, y_scales, params) {
   # Recombine the data
   data <- unsplit(panels, data$PANEL)
   data
+}
+
+should_transform <- function(scale, columns) {
+  if (is.null(scale) || scale$is_discrete()) {
+    return(character(0))
+  }
+  if (scale$trans$name %in% c("date", "time", "hms")) {
+    return(character(0))
+  }
+  vars <- intersect(scale$aesthetics, columns)
 }

@@ -14,6 +14,8 @@ guide_axis_logticks(
   prescaled = FALSE,
   trunc_lower = NULL,
   trunc_upper = NULL,
+  colour = NULL,
+  color = NULL,
   base = waiver()
 )
 }
@@ -40,7 +42,7 @@ top-to-bottom), if more than one  guide must be drawn at the same location.}
 \item{position}{Where this guide should be drawn: one of top, bottom,
 left, or right.}
 
-\item{prescaled}{A \code{logical} of length one, indicating wether the data
+\item{prescaled}{A \code{logical} of length one, indicating whether the data
 has been manually rescaled (\code{TRUE}) or the scale takes care of the
 transformation (\code{FALSE}).}
 
@@ -65,6 +67,14 @@ mapped positions as \code{numeric}.
 \item A \code{numeric} value in data units for the lower and upper boundaries.
 \item A \code{unit} object.
 }}
+
+\item{colour}{A \code{character(1)} with a valid colour for colouring the
+axis text, axis ticks and axis line. Overrules the colour assigned by the
+theme.}
+
+\item{color}{A \code{character(1)} with a valid colour for colouring the
+axis text, axis ticks and axis line. Overrules the colour assigned by the
+theme.}
 
 \item{base}{When this is provided, the guide takes this as the base for the
 log transformation instead of trying to guess the base. It is recommended
@@ -107,6 +117,7 @@ p + scale_y_log10(guide = "axis_logticks") +
 }
 \seealso{
 Other axis-guides: 
+\code{\link{guide_axis_manual}()},
 \code{\link{guide_axis_minor}()},
 \code{\link{guide_axis_nested}()},
 \code{\link{guide_axis_truncated}()}

@@ -13,12 +13,12 @@ status](https://www.r-pkg.org/badges/version/ggh4x)](https://CRAN.R-project.org/
 <!-- badges: end -->
 
 The ggh4x package is a ggplot2 extension package. It provides some
-utility functions that are don’t entirely fit within the ‘grammar of
+utility functions that don’t entirely fit within the ‘grammar of
 graphics’ concept —they can be a bit hacky— but can nonetheless be
 useful in tweaking your ggplots. Examples include adjusting the sizes of
-facets, mapping multiple aesthetics to colours and specififying
-individual scales for facets. Besides this, it is also a small
-collection of geoms, facets, positions, guides and stats.
+facets, mapping multiple aesthetics to colours and specifying individual
+scales for facets. Besides this, it is also a small collection of geoms,
+facets, positions, guides and stats.
 
 ## Installation
 
@@ -38,9 +38,16 @@ examples. Links to these topics are below.
 -   Options to tailor
     [facets](https://teunbrand.github.io/ggh4x/articles/Facets.html),
     including:
+    -   Additional options for axis labelling and placement in [extended
+        facets](https://teunbrand.github.io/ggh4x/articles/Facets.html#extended-facets-1).
     -   [Nested
         facets](https://teunbrand.github.io/ggh4x/articles/Facets.html#nested-facets)
         that have strips that can span multiple panels.
+    -   Custom layouts in [manual
+        facets](https://teunbrand.github.io/ggh4x/articles/Facets.html#manual-facets-1).
+    -   More types of
+        [strips](https://teunbrand.github.io/ggh4x/articles/Facets.html#strips-1)
+        to use in facets.
     -   Adjusting the [position
         scales](https://teunbrand.github.io/ggh4x/articles/Facets.html#position-scales)
         on a per-panel basis.
@@ -51,10 +58,15 @@ examples. Links to these topics are below.
 -   ggh4x has some [position
     guides](https://teunbrand.github.io/ggh4x/articles/PositionGuides.html)
     that change the way x- and y-axes look. You can:
+    -   [recolour](https://teunbrand.github.io/ggh4x/articles/PositionGuides.html#coloured-axis-1)
+        the axis or cut the axis line with [truncated
+        axes](https://teunbrand.github.io/ggh4x/articles/PositionGuides.html#truncated-axes-1).
     -   include the [minor breaks as minor tick
         marks](https://teunbrand.github.io/ggh4x/articles/PositionGuides.html#minor-ticks).
     -   detail log<sub>10</sub> axes with [logarithmic
         tickmarks](https://teunbrand.github.io/ggh4x/articles/PositionGuides.html#logarithmic-ticks).
+    -   fine-tune the placement of labels and breaks with [manual
+        axes](https://teunbrand.github.io/ggh4x/articles/PositionGuides.html#manual-axes-1).
     -   indicate [nested
         relations](https://teunbrand.github.io/ggh4x/articles/PositionGuides.html#nested-relations)
         in discrete axes.
@@ -68,7 +80,7 @@ examples. Links to these topics are below.
         density](https://teunbrand.github.io/ggh4x/articles/Statistics.html#theoretical-densities)
         of several distributions, which are computed with the
         **fitdistrplus** package.
-    -   draw a trendline of your data with a [rolling
+    -   draw a trend line of your data with a [rolling
         kernel](https://teunbrand.github.io/ggh4x/articles/Statistics.html#rolling-kernels).
     -   plainly [transform x and
         y](https://teunbrand.github.io/ggh4x/articles/Statistics.html#function-x-y)
@@ -130,7 +142,7 @@ g <- g +
 g
 ```
 
-<img src="man/figures/README-multicolour-1.png" width="80%" />
+<img src="man/figures/README-multicolour-1.png" width="80%" style="display: block; margin: auto;" />
 
 ``` r
 # We can make a facet wherein duplicated strip labels are merged into one strip
@@ -155,14 +167,17 @@ g <- g + force_panelsizes(cols = c(1, size, size ^ 2), respect = TRUE)
 g
 ```
 
-<img src="man/figures/README-facets-1.png" width="80%" />
+<img src="man/figures/README-facets-1.png" width="80%" style="display: block; margin: auto;" />
 
 ## Footnote
 
 I would like to mention that there are also packages that do some
 similar things to what this package does.
 [facetscales](https://github.com/zeehio/facetscales) also has a facet
-function wherein scales can set per row/colum. The
+function wherein scales can set per row/column. The
+[egg](https://github.com/jwdink/egg) package can also set panel sizes.
+The [lemon](https://github.com/stefanedwards/lemon) package also has
+options to tweak position axes. The
 [relayer](https://github.com/clauswilke/relayer) and
 [ggnewscale](https://github.com/cran/ggnewscale) packages also allow
 multiple colour scales in the same plot.

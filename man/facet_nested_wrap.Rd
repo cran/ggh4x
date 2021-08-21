@@ -17,9 +17,11 @@ facet_nested_wrap(
   drop = TRUE,
   dir = "h",
   strip.position = "top",
-  nest_line = FALSE,
+  nest_line = element_blank(),
   resect = unit(0, "mm"),
-  bleed = FALSE
+  trim_blank = TRUE,
+  strip = strip_nested(),
+  bleed = NULL
 )
 }
 \arguments{
@@ -35,19 +37,34 @@ or a character vector, \code{c("a", "b")}.}
 
 \item{ncol}{Number of rows and columns.}
 
-\item{scales}{Should scales be fixed (\code{"fixed"}, the default),
-free (\code{"free"}), or free in one dimension (\code{"free_x"},
-\code{"free_y"})?}
+\item{scales}{A \code{character(1)} or \code{logical(1)} whether scales are shared
+across facets or allowed to vary. One of the following:
+\describe{
+\item{\code{"fixed"} or \code{FALSE}}{Scales are shared across all facets
+(default).}
+\item{\code{"free_x"}}{x-scales are allowed to vary.}
+\item{\code{"free_y"}}{y-scales are allowed to vary.}
+\item{\code{"free"} or \code{TRUE}}{Both scales can vary}
+}}
 
-\item{axes}{A \code{character} where axes should be drawn. Either
-\code{"margins"} (default), \code{"rows"}, \code{"cols"} or \code{"full"}.
-Only applies when the scale is free through the \code{scales} argument.}
+\item{axes}{A \code{character(1)} or \code{logical(1)} where axes should be drawn. One
+of the following:
+\describe{
+\item{\code{"margins"} or \code{FALSE}}{Only draw axes at the outer margins
+(default).}
+\item{\code{"x"}}{Draw axes at the outer margins and all inner x-axes too.}
+\item{\code{"y"}}{Draw axes at the outer margins and all inner y-axes too.}
+\item{\code{"all"} or \code{TRUE}}{Draw the axes for every panel.}
+}}
 
-\item{remove_labels}{A \code{character} denoting what labels should be
-removed when axes are repeated and redundant. Either \code{"none"}
-(default), \code{"rows"}, \code{"cols"} or \code{"all"}. Only applies to
-relevant position guides included with the \code{axes} argument when scales
-are fixed.}
+\item{remove_labels}{A \code{character(1)} or \code{logical(1)} determining whether
+axis text is displayed at inner panels. One of the following:
+\describe{
+\item{\code{"none"} or \code{FALSE}}{Display axis text at all axes (default).}
+\item{\code{"x"}}{Display axis text at outer margins and all inner y-axes.}
+\item{\code{"y"}}{Display axis text at outer margins and all inner x-axes.}
+\item{\code{"all"} or \code{TRUE}}{Only display axis text at the outer margins.}
+}}
 
 \item{shrink}{If \code{TRUE}, will shrink scales to fit output of
 statistics, not raw data. If \code{FALSE}, will be range of raw data
@@ -80,17 +97,23 @@ the plot. Using \code{strip.position} it is possible to place the labels on
 either of the four sides by setting \code{strip.position = c("top",
   "bottom", "left", "right")}}
 
-\item{nest_line}{a \code{logical} vector of length 1, indicating whether to
-draw a nesting line to indicate the nesting of variables. Control the look
-of the nesting line by setting the \code{ggh4x.facet.nestline} theme
-element.}
+\item{nest_line}{a theme element, either \code{element_blank()} or inheriting
+from \code{\link[ggplot2]{element_line}()}. This element inherits from
+the \code{ggh4x.facet.nestline} element in the theme.}
 
 \item{resect}{a \code{unit} vector of length 1, indicating how much the
 nesting line should be shortened.}
 
-\item{bleed}{a \code{logical} vector of length 1, indicating whether merging
-of lower-level variables is allowed when the higher-level variables are
-separate. See details.}
+\item{trim_blank}{A \code{logical(1)}. When \code{TRUE} (default), does not draw rows
+and columns containing no panels. When \code{FALSE}, the \code{nrow} and \code{ncol}
+arguments are taken literally, even when there are more than needed to
+fit all panels.}
+
+\item{strip}{An object created by a call to a strip function, such as
+\code{\link[ggh4x]{strip_nested}()}.}
+
+\item{bleed}{Deprecated. Use `strip = strip_nested(bleed = ...)` instead.
+See details.}
 }
 \value{
 A \code{FacetNestedWrap} ggproto object that can be added to a plot.
@@ -107,42 +130,35 @@ This function inherits the capabilities of
   through regular \code{facet_wrap()} layout behaviour.
 
   Hierarchies are inferred from the order of variables supplied to
-  \code{rows} or \code{cols}. The first variable is interpreted to be the
-  outermost variable, while the last variable is interpreted to be the
-  innermost variable. They display order is always such that the outermost
-  variable is placed the furthest away from the panels. Strips are
-  automatically grouped when they span a nested variable.
-
-  The \code{bleed} argument controls whether lower-level variables are allowed
-  to be merged when higher-level are different, i.e. they can bleed over
-  hierarchies. Suppose the \code{facet_wrap()} behaviour would be the
-  following:
-
-  \code{[_1_][_2_][_2_]} \cr \code{[_3_][_3_][_4_]}
-
-  In such case, the default \code{bleed = FALSE} argument would result in the
-  following:
-
-  \code{[_1_][___2____]} \cr \code{[_3_][_3_][_4_]}
-
-  Whereas \code{bleed = TRUE} would allow the following:
-
-  \code{[_1_][___2____]} \cr \code{[___3____][_4_]}
+  \code{facets}. The first variable is interpreted to be the outermost
+  variable, while the last variable is interpreted to be the innermost
+  variable. They display order is always such that the outermost
+  variable is placed the furthest away from the panels. For more information
+  about the nesting of strips, please visit the documentation of
+  \code{\link[ggh4x]{strip_nested}()}.
 }
 \examples{
+# A standard plot
 p <- ggplot(mpg, aes(displ, hwy)) +
   geom_point()
+
+# Similar to `facet_wrap2(..., strip = strip_nested())`.
 p + facet_nested_wrap(vars(cyl, drv))
 
-# Controlling the nest line
-p + facet_nested_wrap(vars(cyl, drv), nest_line = TRUE) +
+# A nest line inherits from the global theme
+p + facet_nested_wrap(vars(cyl, drv),
+                      nest_line = element_line(colour = "red")) +
   theme(ggh4x.facet.nestline = element_line(linetype = 3))
-
-# Ignore nested hierarchies with the 'bleed' argument
- p + facet_nested_wrap(vars(drv, cyl), bleed = TRUE)
 }
 \seealso{
+See \code{\link[ggh4x]{strip_nested}} for nested strips. See
+  \code{\link[ggplot2]{facet_wrap}} for descriptions of the original
+  arguments. See \code{\link[grid]{unit}} for the construction of a
+  \code{unit} vector.
+
 Other facetting functions: 
+\code{\link{facet_grid2}()},
+\code{\link{facet_manual}()},
 \code{\link{facet_nested}()},
 \code{\link{facet_wrap2}()}
 }

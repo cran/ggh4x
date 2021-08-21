@@ -3,7 +3,7 @@
 #' @title Run length encoding
 #'
 #' @description Run length encoding takes a vector of values and calculates the
-#' lengths of consequetive repeated values.
+#' lengths of consecutive repeated values.
 #'
 #' @inheritParams ggplot2::stat_density
 #' @param align A \code{character} of length one that effect the computed
@@ -103,7 +103,6 @@ stat_rle <- function(
 #' @format NULL
 #' @export
 #' @rdname ggh4x_extensions
-#' @importFrom vctrs new_vctr
 StatRle <- ggproto(
   "StatRle",
   Stat,
@@ -155,7 +154,7 @@ StatRle <- ggproto(
       values <- factor(values, levels = lvls)
     }
 
-    list2df(list(
+    .int$new_data_frame(list(
       start = start,
       end = end,
       start_id = start_id,
@@ -172,7 +171,6 @@ StatRle <- ggproto(
 # This is a bit of an ugly solution to let the label variable not be counted as
 # a non-finite variable.
 
-#' @importFrom vctrs vec_math
 #' @export
 #' @usage NULL
 #' @rdname stat_rle

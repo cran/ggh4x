@@ -10,6 +10,8 @@ guide_axis_minor(
   angle = NULL,
   n.dodge = 1,
   order = 0,
+  colour = NULL,
+  color = NULL,
   trunc_lower = NULL,
   trunc_upper = NULL,
   position = waiver()
@@ -34,6 +36,14 @@ useful for displaying labels that would otherwise overlap.}
 
 \item{order}{Used to determine the order of the guides (left-to-right,
 top-to-bottom), if more than one  guide must be drawn at the same location.}
+
+\item{colour}{A \code{character(1)} with a valid colour for colouring the
+axis text, axis ticks and axis line. Overrules the colour assigned by the
+theme.}
+
+\item{color}{A \code{character(1)} with a valid colour for colouring the
+axis text, axis ticks and axis line. Overrules the colour assigned by the
+theme.}
 
 \item{trunc_lower}{The lower and upper range of the truncated
 axis:
@@ -89,6 +99,7 @@ p + scale_y_continuous(guide = "axis_minor") +
 \seealso{
 Other axis-guides: 
 \code{\link{guide_axis_logticks}()},
+\code{\link{guide_axis_manual}()},
 \code{\link{guide_axis_nested}()},
 \code{\link{guide_axis_truncated}()}
 }

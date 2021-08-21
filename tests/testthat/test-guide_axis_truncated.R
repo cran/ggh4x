@@ -17,7 +17,7 @@ grab_axis <- function(plot, where = "b") {
 
 test_that("guide_axis_truncated construction works", {
   g <- guide_axis_truncated()
-  expect_s3_class(g, "axis_truncated")
+  expect_s3_class(g, "axis_ggh4x")
 
   # Test error
   expr <- substitute(guide_axis_truncated(trunc_lower = 2, trunc_upper = c(3, 4)))
@@ -85,4 +85,18 @@ test_that("guide_axis_truncated can be placed at every position", {
 
   bottom <- gt$grobs[gt$layout$name == "axis-b"][[1]]$children[[1]]
   expect_true(identical(format(bottom$x), format(unit(c(0.1, 0.9), "npc"))))
+})
+
+test_that("guide_axis_colour can colour axis", {
+  p <- base + guides(x = guide_axis_colour(colour = "blue"))
+  axis <- grab_axis(p)
+  expect_equal(axis$grobs[[1]]$gp$col, "blue")
+  expect_equal(axis$grobs[[2]]$children[[1]]$gp$col, "blue")
+})
+
+test_that('guide_axis_colour works without breaks', {
+  p <- base + scale_x_continuous(breaks = numeric(), guide = guide_axis_colour(colour = 'red'))
+  p <- ggplotGrob(p)
+  axis <- p$grobs[p$layout$name == "axis-b"][[1]]
+  expect_equal(axis$children[[1]]$gp$col, "red")
 })

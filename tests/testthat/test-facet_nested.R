@@ -69,11 +69,6 @@ test_that("facet_nested returns helpful error messages", {
   test <- basic + facet_nested(~ Nester + Species)
   ctrl <- expect_silent(layer_data(ctrl))
   test <- expect_error(layer_data(test), "Plot is missing")
-
-  # Upon invalid switch
-  test <- substitute(basic + facet_nested(~ nester + Species,
-                                          switch = "Nonsense"))
-  expect_error(eval(test), "switch must be either")
 })
 
 # Strip nesting tests -----------------------------------------------------
@@ -128,7 +123,7 @@ test_that("facet_nested can draw nesting lines horizontally", {
   # Build gtable
   g <- basic + facet_nested(~ nester + Species, nest_line = TRUE)
   g <- ggplotGrob(g)
-  strp <- g$grobs[g$layout$name == "strip-t-1-1"][[1]]
+  strp <- g$grobs[g$layout$name == "strip-t-1"][[1]]
 
   # Grab metrics
   is_indicator <- grepl("nester", strp$layout$name)
@@ -143,7 +138,7 @@ test_that("facet_nested can draw nesting lines vertically", {
   # Build gtable
   g <- basic + facet_nested(nester + Species ~., nest_line = TRUE)
   g <- ggplotGrob(g)
-  strp <- g$grobs[g$layout$name == "strip-r-1-2"][[1]]
+  strp <- g$grobs[g$layout$name == "strip-r-1"][[1]]
 
   # Grab metrics
   is_indicator <- grepl("nester", strp$layout$name)
@@ -164,8 +159,8 @@ test_that("facet_nested line resection works", {
                                resect = grid::unit(0, "mm"))
   test <- ggplotGrob(test)
   ctrl <- ggplotGrob(ctrl)
-  test <- test$grobs[test$layout$name == "strip-t-1-1"][[1]]
-  ctrl <- ctrl$grobs[ctrl$layout$name == "strip-t-1-1"][[1]]
+  test <- test$grobs[test$layout$name == "strip-t-1"][[1]]
+  ctrl <- ctrl$grobs[ctrl$layout$name == "strip-t-1"][[1]]
 
   # Grab metrics
   test <- test$grobs[[grep("nester", test$layout$name)]]
@@ -197,8 +192,10 @@ bleed <- ggplot(df, aes(x, y)) +
 
 test_that("facet_nested can bleed horizontally", {
   # Setup gtable layouts
-  ctrl <- bleed + facet_nested(~ outer + inner, bleed = FALSE)
-  test <- bleed + facet_nested(~ outer + inner, bleed = TRUE)
+  ctrl <- bleed + facet_nested(~ outer + inner,
+                               strip = strip_nested(bleed = FALSE))
+  test <- bleed + facet_nested(~ outer + inner,
+                               strip = strip_nested(bleed = TRUE))
 
   ctrl <- ggplotGrob(ctrl)
   test <- ggplotGrob(test)
@@ -217,8 +214,10 @@ test_that("facet_nested can bleed horizontally", {
 
 test_that("facet_nested horizontal bleeding works", {
   # Setup gtable layouts
-  ctrl <- bleed + facet_nested(~ outer + inner, bleed = FALSE)
-  test <- bleed + facet_nested(~ outer + inner, bleed = TRUE)
+  ctrl <- bleed + facet_nested(~ outer + inner,
+                               strip = strip_nested(bleed = FALSE))
+  test <- bleed + facet_nested(~ outer + inner,
+                               strip = strip_nested(bleed = TRUE))
 
   ctrl <- ggplotGrob(ctrl)
   test <- ggplotGrob(test)
@@ -242,14 +241,16 @@ test_that("facet_nested horizontal bleeding works", {
   expect_lt(test$l[2], test$r[2])
   expect_lt(test$l[3], test$r[3])
 
-  expect_equal(which(ctrl$l != ctrl$r), 3)
-  expect_lt(ctrl$l[3], ctrl$r[3])
+  expect_equal(which(ctrl$l != ctrl$r), 2)
+  expect_lt(ctrl$l[2], ctrl$r[2])
 })
 
 test_that("facet_nested can bleed vertically", {
   # Setup gtable layouts
-  ctrl <- bleed + facet_nested(outer + inner ~ ., bleed = FALSE)
-  test <- bleed + facet_nested(outer + inner ~ ., bleed = TRUE)
+  ctrl <- bleed + facet_nested(outer + inner ~ .,
+                               strip = strip_nested(bleed = FALSE))
+  test <- bleed + facet_nested(outer + inner ~ .,
+                               strip = strip_nested(bleed = TRUE))
 
   ctrl <- ggplotGrob(ctrl)
   test <- ggplotGrob(test)
@@ -268,8 +269,10 @@ test_that("facet_nested can bleed vertically", {
 
 test_that("facet_nested vertical bleeding works", {
   # Setup gtable layouts
-  ctrl <- bleed + facet_nested(outer + inner ~ ., bleed = FALSE)
-  test <- bleed + facet_nested(outer + inner ~ ., bleed = TRUE)
+  ctrl <- bleed + facet_nested(outer + inner ~ .,
+                               strip = strip_nested(bleed = FALSE))
+  test <- bleed + facet_nested(outer + inner ~ .,
+                               strip = strip_nested(bleed = TRUE))
 
   ctrl <- ggplotGrob(ctrl)
   test <- ggplotGrob(test)
@@ -285,12 +288,12 @@ test_that("facet_nested vertical bleeding works", {
   expect_equal(sum(ctrl$t == ctrl$b), 4)
 
   # Test unequal strips
-  expect_equal(which(test$t != test$b), c(1, 3))
-  expect_lt(test$t[1], test$b[1])
+  expect_equal(which(test$t != test$b), c(2, 3))
+  expect_lt(test$t[2], test$b[2])
   expect_lt(test$t[3], test$b[3])
 
-  expect_equal(which(ctrl$t != ctrl$b), 4)
-  expect_lt(ctrl$t[4], ctrl$b[4])
+  expect_equal(which(ctrl$t != ctrl$b), 2)
+  expect_lt(ctrl$t[2], ctrl$b[2])
 })
 
 
@@ -330,5 +333,5 @@ test_that("facet_nested handles combined datasets with missing inner variables",
   expect_false(length(test_striplabels) == length(ctrl_striplabels))
   expect_equal(length(ctrl_striplabels) - length(test_striplabels), 3)
   expect_equal(ctrl_striplabels, c("1", "A", "1", "B", "2", "A", "2", 'B'))
-  expect_equal(test_striplabels, c("1", "A", "B", "2", ""))
+  expect_equal(test_striplabels, c("1", "2", "A", "B", ""))
 })

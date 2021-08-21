@@ -172,6 +172,40 @@ ggplot(mpg, aes(displ, hwy, colour = class)) +
   stat_rollingkernel(kernel = "mean", bw = 1)
 
 ## -----------------------------------------------------------------------------
+g <- ggplot(economics, aes(date))
+
+g + geom_ribbon(aes(ymin = pmin(psavert, uempmed), 
+                    ymax = pmax(psavert, uempmed),
+                    fill = uempmed > psavert),
+                alpha = 0.8)
+
+## -----------------------------------------------------------------------------
+g + stat_difference(aes(ymin = psavert, ymax = uempmed),
+                  alpha  = 0.8)
+
+## -----------------------------------------------------------------------------
+g + stat_difference(aes(ymin = psavert, ymax = uempmed),
+                    levels = c("More uempmed", "More psavert", NA),
+                    alpha  = 0.8) +
+  scale_fill_discrete(na.translate = FALSE)
+
+## ---- fig.show='hold', fig.width = 3------------------------------------------
+df <- data.frame(
+  x = c(1:4), ymin = c(0, 1, 2, 2.5), ymax = c(2.5, 2, 1, 0.5)
+)
+
+g <- ggplot(df, aes(x, ymin = ymin, ymax = ymax)) +
+  guides(fill = 'none') +
+  geom_point(aes(y = ymin)) +
+  geom_point(aes(y = ymax))
+
+g + geom_ribbon(aes(fill = ymax < ymin)) +
+  ggtitle("Plain ribbon")
+
+g + stat_difference() +
+  ggtitle("stat_difference()")
+
+## -----------------------------------------------------------------------------
 df <- faithful
 df$group <- ifelse(df$eruptions > 3, "High", "Low")
 

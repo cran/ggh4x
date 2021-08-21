@@ -9,16 +9,19 @@ facet_nested(
   cols = NULL,
   scales = "fixed",
   space = "fixed",
+  axes = "margins",
+  remove_labels = "none",
+  independent = "none",
   shrink = TRUE,
   labeller = "label_value",
   as.table = TRUE,
   switch = NULL,
   drop = TRUE,
   margins = FALSE,
-  facets = NULL,
-  nest_line = FALSE,
+  nest_line = element_blank(),
   resect = unit(0, "mm"),
-  bleed = FALSE
+  strip = strip_nested(),
+  bleed = NULL
 )
 }
 \arguments{
@@ -44,15 +47,61 @@ the columns (of the tabular display) on the RHS; the dot in the
 formula is used to indicate there should be no faceting on this
 dimension (either row or column).}
 
-\item{scales}{Are scales shared across all facets (the default,
-\code{"fixed"}), or do they vary across rows (\code{"free_x"}),
-columns (\code{"free_y"}), or both rows and columns (\code{"free"})?}
+\item{scales}{A \code{character(1)} or \code{logical(1)} whether scales are shared
+across facets or allowed to vary. Interacts with the \code{independent}
+argument. One of the following:
+\describe{
+\item{\code{"fixed"} or \code{FALSE}}{Scales are shared across all facets
+(default).}
+\item{\code{"free_x"}}{x-scales are allowed to vary across rows.}
+\item{\code{"free_y"}}{y-scales are allowed to vary across columns.}
+\item{\code{"free"} or \code{TRUE}}{Scales can vary across rows and columns.}
+}}
 
-\item{space}{If \code{"fixed"}, the default, all panels have the same size.
-If \code{"free_y"} their height will be proportional to the length of the
-y scale; if \code{"free_x"} their width will be proportional to the
-length of the x scale; or if \code{"free"} both height and width will
-vary.  This setting has no effect unless the appropriate scales also vary.}
+\item{space}{A \code{character(1)} or \code{logical(1)} determining whether the size of
+panels are proportional to the length of the scales. When the \code{independent}
+argument allows for free scales in a dimension, the panel sizes cannot be
+proportional. Note that the \code{scales} argument must be free in the same
+dimension as the \code{space} argument to have an effect.One of the following:
+\describe{
+\item{\code{"fixed"} or \code{FALSE}}{All panels have the same size (default).}
+\item{\code{"free_x"}}{Panel widths are proportional to the x-scales.}
+\item{\code{"free_y"}}{Panel heights are proportional to the y-scales.}
+\item{\code{"free"} or \code{TRUE}}{Both the widths and heights vary according to
+scales.}
+}}
+
+\item{axes}{A \code{character(1)} or \code{logical(1)} where axes should be drawn. One
+of the following:
+\describe{
+\item{\code{"margins"} or \code{FALSE}}{Only draw axes at the outer margins
+(default).}
+\item{\code{"x"}}{Draw axes at the outer margins and all inner x-axes too.}
+\item{\code{"y"}}{Draw axes at the outer margins and all inner y-axes too.}
+\item{\code{"all"} or \code{TRUE}}{Draw the axes for every panel.}
+}}
+
+\item{remove_labels}{A \code{character(1)} or \code{logical(1)} determining whether
+axis text is displayed at inner panels. One of the following:
+\describe{
+\item{\code{"none"} or \code{FALSE}}{Display axis text at all axes (default).}
+\item{\code{"x"}}{Display axis text at outer margins and all inner y-axes.}
+\item{\code{"y"}}{Display axis text at outer margins and all inner x-axes.}
+\item{\code{"all"} or \code{TRUE}}{Only display axis text at the outer margins.}
+}}
+
+\item{independent}{A \code{character(1)} or \code{logical(1)} determining whether
+scales can vary within a row or column of panels, like they can be in
+\link[ggplot2:facet_wrap]{ggplot2::facet_wrap}. The \code{scales} argument must be free for the same
+dimension before they can be set to independent. One of the following:
+\describe{
+\item{\code{"none"} or \code{FALSE}}{All y-scales should be fixed in a row and all
+x-scales are fixed in a column (default).}
+\item{\code{"x"}}{x-scales are allowed to vary within a column.}
+\item{\code{"y"}}{y-scales are allowed to vary within a row.}
+\item{\code{"all"} or \code{TRUE}}{Both x- and y-scales are allowed to vary within
+a column or row respectively.}
+}}
 
 \item{shrink}{If \code{TRUE}, will shrink scales to fit output of
 statistics, not raw data. If \code{FALSE}, will be range of raw data
@@ -91,30 +140,31 @@ default). If \code{TRUE}, margins are included for all faceting
 variables. If specified as a character vector, it is the names of
 variables for which margins are to be created.}
 
-\item{facets}{This argument is soft-deprecated, please use \code{rows}
-and \code{cols} instead.}
-
-\item{nest_line}{a \code{logical} vector of length 1, indicating whether to
-draw a nesting line to indicate the nesting of variables. Control the look
-of the nesting line by setting the \code{ggh4x.facet.nestline} theme
-element.}
+\item{nest_line}{a theme element, either \code{element_blank()} or inheriting
+from \code{\link[ggplot2]{element_line}()}. This element inherits from
+the \code{ggh4x.facet.nestline} element in the theme.}
 
 \item{resect}{a \code{unit} vector of length 1, indicating how much the
 nesting line should be shortened.}
 
-\item{bleed}{a \code{logical} vector of length 1, indicating whether merging
-of lower-level variables is allowed when the higher-level variables are
-separate. See details.}
+\item{strip}{An object created by a call to a strip function, such as
+\code{\link[ggh4x]{strip_nested}()}.}
+
+\item{bleed}{Deprecated. Use `strip = strip_nested(bleed = ...)` instead.
+See details.}
 }
 \value{
-A \emph{FacetNested} ggproto object.
+A \emph{FacetNested} ggproto object that can be added to a plot.
 }
 \description{
 \code{facet_nested()} forms a matrix of panels defined by row
   and column faceting variables and nests grouped facets.
 }
 \details{
-Unlike \code{facet_grid()}, this function only automatically expands
+This function inherits the capabilities of
+  \code{\link[ggh4x]{facet_grid2}()}.
+
+  Unlike \code{facet_grid()}, this function only automatically expands
   missing variables when they have no variables in that direction, to allow
   for unnested variables. It still requires at least one layer to have all
   faceting variables.
@@ -123,47 +173,31 @@ Unlike \code{facet_grid()}, this function only automatically expands
   \code{rows} or \code{cols}. The first variable is interpreted to be the
   outermost variable, while the last variable is interpreted to be the
   innermost variable. They display order is always such that the outermost
-  variable is placed the furthest away from the panels. Strips are
-  automatically grouped when they span a nested variable.
-
-  The \code{bleed} argument controls whether lower-level variables are allowed
-  to be merged when higher-level are different, i.e. they can bleed over
-  hierarchies. Suppose the \code{facet_grid()} behaviour would be the
-  following:
-
-  \code{[_1_][_2_][_2_]} \cr \code{[_3_][_3_][_4_]}
-
-  In such case, the default \code{bleed = FALSE} argument would result in the
-  following:
-
-  \code{[_1_][___2____]} \cr \code{[_3_][_3_][_4_]}
-
-  Whereas \code{bleed = TRUE} would allow the following:
-
-  \code{[_1_][___2____]} \cr \code{[___3____][_4_]}
+  variable is placed the furthest away from the panels. For more information
+  about the nesting of strips, please visit the documentation of
+  \code{\link[ggh4x]{strip_nested}()}.
 }
 \examples{
-df <- iris
-df$nester <- ifelse(df$Species == "setosa",
-                    "Short Leaves",
-                    "Long Leaves")
+# A standard plot
+p <- ggplot(mtcars, aes(mpg, wt)) +
+  geom_point()
 
-ggplot(df, aes(Sepal.Length, Petal.Length)) +
-  geom_point() +
-  facet_nested(~ nester + Species)
+# Similar to `facet_grid2(..., strip = strip_nested())`
+p + facet_nested(~ vs + cyl)
 
-# Controlling the nest line
-ggplot(df, aes(Sepal.Length, Petal.Length)) +
-  geom_point() +
-  facet_nested(~ nester + Species, nest_line = TRUE) +
+# The nest line inherits from the global theme
+p + facet_nested(~ cyl + vs, nest_line = element_line(colour = "red")) +
   theme(ggh4x.facet.nestline = element_line(linetype = 3))
 }
 \seealso{
-See \code{\link[ggplot2]{facet_grid}} for descriptions of the
-  original arguments. See \code{\link[grid]{unit}} for the construction of a
+See \code{\link[ggh4x]{strip_nested}} for nested strips. See
+  \code{\link[ggplot2]{facet_grid}} for descriptions of the original
+  arguments. See \code{\link[grid]{unit}} for the construction of a
   \code{unit} vector.
 
 Other facetting functions: 
+\code{\link{facet_grid2}()},
+\code{\link{facet_manual}()},
 \code{\link{facet_nested_wrap}()},
 \code{\link{facet_wrap2}()}
 }
