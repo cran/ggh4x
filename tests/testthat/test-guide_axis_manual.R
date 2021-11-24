@@ -65,7 +65,7 @@ test_that("guide_axis_manual training is correct in continuous axes", {
   key <- guide_train(guide, scale)$key
 
   expect_s3_class(key$y, "unit")
-  expect_equivalent(unclass(key$y), c(0.45, 0.5, 0.55))
+  expect_equal(unclass(key$y), c(0.45, 0.5, 0.55), ignore_attr = TRUE)
 
   # Test function breaks and labels
   guide <- guide_axis_manual(breaks = mean,
@@ -110,7 +110,7 @@ test_that("guide_axis_manual training is correct in continuous axes", {
   key <- guide_train(guide, scale)$key
   xx <<- key
 
-  expect_equivalent(unclass(key$x), c(0.5))
+  expect_equal(unclass(key$x), c(0.5), ignore_attr = TRUE)
   expect_s3_class(key$x, "unit")
 })
 
@@ -126,22 +126,10 @@ test_that("guide_axis_manual can be placed at every position", {
                               labels = ~ .x ^ 2)
   )
 
-  gt <- ggplotGrob(base + g)
-  expect_s3_class(gt, "gtable")
-
-  left <- gt$grobs[gt$layout$name == "axis-l"][[1]]$children[[2]]
-  expect_equal(left$grobs[[1]]$children[[1]]$gp$fontface, rep("bold", 4))
-
-  right <- gt$grobs[gt$layout$name == "axis-r"][[1]]$children[[2]]
-  expect_equal(right$grobs[[2]]$children[[1]]$y,
-               left$grobs[[1]]$children[[1]]$y[c(1,3)])
-
-  top <- gt$grobs[gt$layout$name == "axis-t"][[1]]$children[[2]]
-  expect_equivalent(unclass(top$grobs[[1]]$children[[1]]$x), c(0.1, 0.2))
-
-  bottom <- gt$grobs[gt$layout$name == "axis-b"][[1]]$children[[2]]
-  expect_equivalent(bottom$grobs[[2]]$children[[1]]$gp$col,
-                    c("green", "red", "blue"))
+  skip_if(getRversion() >= "4.2.0")
+  if (requireNamespace("vdiffr", quietly = TRUE)) {
+    vdiffr::expect_doppelganger("Manual axis all sides", base + g + theme_test())
+  }
 })
 
 # Warnings and errors -----------------------------------------------------
