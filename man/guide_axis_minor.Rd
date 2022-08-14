@@ -26,7 +26,7 @@ specified in \code{\link[ggplot2:labs]{labs()}} is used for the title.}
 \item{check.overlap}{silently remove overlapping labels,
 (recursively) prioritizing the first, last, and middle labels.}
 
-\item{angle}{Compared to setting the angle in \code{\link[ggplot2:theme]{theme()}} / \code{\link[ggplot2:element]{element_text()}},
+\item{angle}{Compared to setting the angle in \code{\link[ggplot2:theme]{theme()}} / \code{\link[ggplot2:element_text]{element_text()}},
 this also uses some heuristics to automatically pick the \code{hjust} and \code{vjust} that
 you probably want.}
 
@@ -37,26 +37,11 @@ useful for displaying labels that would otherwise overlap.}
 \item{order}{Used to determine the order of the guides (left-to-right,
 top-to-bottom), if more than one  guide must be drawn at the same location.}
 
-\item{colour}{A \code{character(1)} with a valid colour for colouring the
+\item{colour, color}{A \code{character(1)} with a valid colour for colouring the
 axis text, axis ticks and axis line. Overrules the colour assigned by the
 theme.}
 
-\item{color}{A \code{character(1)} with a valid colour for colouring the
-axis text, axis ticks and axis line. Overrules the colour assigned by the
-theme.}
-
-\item{trunc_lower}{The lower and upper range of the truncated
-axis:
-\itemize{
-\item \code{NULL} to not perform any truncation.
-\item A \code{function} that takes the break positions as input and returns the lower
-or upper boundary. Note that also for discrete scales, positions are the
-mapped positions as \code{numeric}.
-\item A \code{numeric} value in data units for the lower and upper boundaries.
-\item A \code{unit} object.
-}}
-
-\item{trunc_upper}{The lower and upper range of the truncated
+\item{trunc_lower, trunc_upper}{The lower and upper range of the truncated
 axis:
 \itemize{
 \item \code{NULL} to not perform any truncation.
@@ -77,11 +62,18 @@ An \emph{axis_minor} guide class object.
 These are similar the the normal axis guides for position scales, but also
 place tickmarks at minor break positions.
 }
-\details{
-The length of minor ticks can be controlled relative to the length
-  of major ticks by setting \code{ggh4x.axis.ticks.length.minor} as a
-  \code{rel} object.
+\section{Theme elements}{
+
+This axis guide uses the following the theme elements:
+
+\describe{
+\item{\code{\link[=theme_extensions]{ggh4x.axis.ticks.length.minor}}}{
+An \code{\link[=rel]{rel()}} object to set the size of minor ticks relative to the
+length of major ticks (\code{axis.ticks.length}). Defaults to \code{rel(2/3)}.
 }
+}
+}
+
 \examples{
 # Using the minor breaks axis
 p <- ggplot(iris, aes(Sepal.Width, Sepal.Length)) +
@@ -101,6 +93,7 @@ Other axis-guides:
 \code{\link{guide_axis_logticks}()},
 \code{\link{guide_axis_manual}()},
 \code{\link{guide_axis_nested}()},
+\code{\link{guide_axis_scalebar}()},
 \code{\link{guide_axis_truncated}()}
 }
 \concept{axis-guides}

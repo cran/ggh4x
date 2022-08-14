@@ -14,7 +14,19 @@
 
 <title>Introduction to ggh4x</title>
 
-<script src="data:application/javascript;base64,Ly8gUGFuZG9jIDIuOSBhZGRzIGF0dHJpYnV0ZXMgb24gYm90aCBoZWFkZXIgYW5kIGRpdi4gV2UgcmVtb3ZlIHRoZSBmb3JtZXIgKHRvCi8vIGJlIGNvbXBhdGlibGUgd2l0aCB0aGUgYmVoYXZpb3Igb2YgUGFuZG9jIDwgMi44KS4KZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignRE9NQ29udGVudExvYWRlZCcsIGZ1bmN0aW9uKGUpIHsKICB2YXIgaHMgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCJkaXYuc2VjdGlvbltjbGFzcyo9J2xldmVsJ10gPiA6Zmlyc3QtY2hpbGQiKTsKICB2YXIgaSwgaCwgYTsKICBmb3IgKGkgPSAwOyBpIDwgaHMubGVuZ3RoOyBpKyspIHsKICAgIGggPSBoc1tpXTsKICAgIGlmICghL15oWzEtNl0kL2kudGVzdChoLnRhZ05hbWUpKSBjb250aW51ZTsgIC8vIGl0IHNob3VsZCBiZSBhIGhlYWRlciBoMS1oNgogICAgYSA9IGguYXR0cmlidXRlczsKICAgIHdoaWxlIChhLmxlbmd0aCA+IDApIGgucmVtb3ZlQXR0cmlidXRlKGFbMF0ubmFtZSk7CiAgfQp9KTsK"></script>
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -24,6 +36,7 @@
   div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
   ul.task-list{list-style: none;}
     </style>
+
 
 
 <style type="text/css">
@@ -125,7 +138,187 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
-<link rel="stylesheet" href="data:text/css,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" type="text/css" />
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
 
 
 
@@ -141,10 +334,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
-<p>The name ‘ggh4x’, pronounced G-G-hacks (ʤiː-ʤiː-hæks) is leetspeak —or <em>1ee75p34k</em>, if you will— for grammar of graphics hacks. The ggh4x packages uses the extension capabilities of ggplot2 to provide a variety of utility functions to use in conjunction with ggplot2. A few among these functions do not “fit” within the layered approach of the grammar, as these make small but useful edits to preceding components of a plot. It is for this reason these functions can be a bit hacky and from which the package’s name derives. However, most functions that were added since use the conventional extension system and as such can be used with ggplot2 as you would use the native functions.</p>
+<p>The name ‘ggh4x’, pronounced G-G-hacks (ʤiː-ʤiː-hæks) is leetspeak
+—or <em>1ee75p34k</em>, if you will— for grammar of graphics hacks. The
+ggh4x packages uses the extension capabilities of ggplot2 to provide a
+variety of utility functions to use in conjunction with ggplot2. A few
+among these functions do not “fit” within the layered approach of the
+grammar, as these make small but useful edits to preceding components of
+a plot. It is for this reason these functions can be a bit hacky and
+from which the package’s name derives. However, most functions that were
+added since use the conventional extension system and as such can be
+used with ggplot2 as you would use the native functions.</p>
 <div id="getting-started" class="section level1">
 <h1>Getting started</h1>
-<p>Using ggh4x is not that different from using ggplot2, as most of the function following their API conventions. Below is an example of the types of things you could do, with as much ggh4x functions as could be reasonably fit into a single plot.</p>
+<p>Using ggh4x is not that different from using ggplot2, as most of the
+function following their API conventions. Below is an example of the
+types of things you could do, with as much ggh4x functions as could be
+reasonably fit into a single plot.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggh4x)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -184,13 +389,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_x_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">40</span>), <span class="at">oob =</span> scales<span class="sc">::</span>oob_keep),</span>
 <span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_x_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">0</span>))</span>
 <span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>  ))</span>
-<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Consider using `data = ~ subset(.x, ...)` instead. This function will likely be deprecated in the future.</span></span>
-<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Consider using `data = ~ subset(.x, ...)` instead. This function will likely be deprecated in the future.</span></span></code></pre></div>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning: `ggsubset()` was deprecated in ggh4x 0.2.0.</span></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; This is best replaced by using `data = ~ subset(.x, ...)` instead.</span></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; This warning is displayed once every 8 hours.</span></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</span></span></code></pre></div>
 <p><img src="data:image/png;base64,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" /><!-- --></p>
 </div>
 <div id="further-reading" class="section level1">
 <h1>Further reading</h1>
-<p>Since ggh4x touches several aspects of ggplot2 plots, a few topics are discussed in more detail in vignettes. Please see the vignettes on <a href="Facets.html">facet_* functions</a>, <a href="Statistics.html">stat_* functions</a> or <a href="PositionGuides.html">position guides</a>.</p>
+<p>Since ggh4x touches several aspects of ggplot2 plots, a few topics
+are discussed in more detail in vignettes. Please see the vignettes on
+<a href="Facets.html">facet_* functions</a>, <a href="Statistics.html">stat_* functions</a> or <a href="PositionGuides.html">position guides</a>.</p>
 </div>
 
 

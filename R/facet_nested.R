@@ -2,44 +2,44 @@
 
 #' @title Layout panels in a grid with nested strips
 #'
-#' @description \code{facet_nested()} forms a matrix of panels defined by row
+#' @description `facet_nested()` forms a matrix of panels defined by row
 #'   and column faceting variables and nests grouped facets.
 #'
 #' @inheritParams facet_grid2
-#' @param nest_line a theme element, either \code{element_blank()} or inheriting
-#'   from \code{\link[ggplot2]{element_line}()}. This element inherits from
-#'   the \code{ggh4x.facet.nestline} element in the theme.
-#' @param resect  a \code{unit} vector of length 1, indicating how much the
+#' @param nest_line a theme element, either `element_blank()` or inheriting
+#'   from [ggplot2::element_line()]. This element inherits from
+#'   the [`ggh4x.facet.nestline`][theme_extensions] element in the theme.
+#' @param resect  a `unit` vector of length 1, indicating how much the
 #'   nesting line should be shortened.
 #' @param strip An object created by a call to a strip function, such as
-#'   \code{\link[ggh4x]{strip_nested}()}.
-#' @param bleed Deprecated. Use `strip = strip_nested(bleed = ...)` instead.
-#'   See details.
+#'   [ggh4x::strip_nested()].
+#' @param bleed `r lifecycle::badge("deprecated")` the `bleed` argument has
+#'   moved to the `strip_nested()` function.
 #'
 #' @details This function inherits the capabilities of
-#'   \code{\link[ggh4x]{facet_grid2}()}.
+#'   [ggh4x::facet_grid2()].
 #'
-#'   Unlike \code{facet_grid()}, this function only automatically expands
+#'   Unlike `facet_grid()`, this function only automatically expands
 #'   missing variables when they have no variables in that direction, to allow
 #'   for unnested variables. It still requires at least one layer to have all
 #'   faceting variables.
 #'
 #'   Hierarchies are inferred from the order of variables supplied to
-#'   \code{rows} or \code{cols}. The first variable is interpreted to be the
+#'   `rows` or `cols`. The first variable is interpreted to be the
 #'   outermost variable, while the last variable is interpreted to be the
 #'   innermost variable. They display order is always such that the outermost
 #'   variable is placed the furthest away from the panels. For more information
 #'   about the nesting of strips, please visit the documentation of
-#'   \code{\link[ggh4x]{strip_nested}()}.
+#'   [ggh4x::strip_nested()].
 #'
 #' @export
 #'
-#' @return A \emph{FacetNested} ggproto object that can be added to a plot.
+#' @return A *FacetNested* ggproto object that can be added to a plot.
 #' @family facetting functions
-#' @seealso See \code{\link[ggh4x]{strip_nested}} for nested strips. See
-#'   \code{\link[ggplot2]{facet_grid}} for descriptions of the original
-#'   arguments. See \code{\link[grid]{unit}} for the construction of a
-#'   \code{unit} vector.
+#' @seealso See [ggh4x::strip_nested()] for nested strips. See
+#'   [ggplot2::facet_grid()] for descriptions of the original
+#'   arguments. See [grid::unit()] for the construction of a
+#'   `unit` vector.
 #'
 #' @examples
 #' # A standard plot
@@ -73,8 +73,12 @@ facet_nested <- function(
 ) {
   strip <- assert_strip(strip)
   if (!is.null(bleed)) {
-    message(paste0("The `bleed` argument should be set in the ",
-                   " `strip_nested()` function."))
+    lifecycle::deprecate_warn(
+      when = "0.2.0",
+      what = "facet_nested(bleed)",
+      details = paste0("The `bleed` argument should be set in the ",
+                       "`strip_nested()` function instead.")
+    )
     strip$params$bleed <- isTRUE(bleed)
   }
   # Convert logical to elements for backward compatibility
@@ -163,6 +167,7 @@ FacetNested <- ggproto(
     } else {
       facet_vals[] <- lapply(facet_vals[], as.factor)
       facet_vals[] <- lapply(facet_vals[], addNA, ifany = TRUE)
+      layout[]     <- lapply(layout[], as.factor)
       keys <- .int$join_keys(facet_vals, layout,
                              by = vars[vars %in% names(facet_vals)])
       data$PANEL <- layout$PANEL[match(keys$x, keys$y)]
@@ -173,24 +178,28 @@ FacetNested <- ggproto(
     data, env = emptyenv(), vars = NULL, drop = TRUE
   ) {
     if (length(vars) == 0) {
-      return(.int$new_data_frame())
+      return(new_data_frame())
     }
 
-    possible_columns <- unique(unlist(lapply(data, names)))
+    possible_columns <- unique0(unlist(lapply(data, names)))
 
     values <- .int$compact(lapply(data, .int$eval_facets, facets = vars,
                                   possible_columns = possible_columns))
     has_all <- unlist(lapply(values, length)) == length(vars)
     if (!any(has_all)) {
       missing <- lapply(values, function(x) setdiff(names(vars), names(x)))
-      missing_txt <- vapply(missing, .int$var_list, character(1))
-      name <- c("Plot", paste0("Layer ", seq_len(length(data) - 1)))
-      stop("At least one layer must contain all faceting variables: ",
-           .int$var_list(names(vars)), ".\n", paste0("* ", name, " is missing ",
-                                                     missing_txt, collapse = "\n"),
-           call. = FALSE)
+      missing_vars <- paste0(
+        c("Plot", paste0("Layer ", seq_len(length(data) - 1))),
+        " is missing {.var ", missing[seq_along(data)], "}"
+      )
+      names(missing_vars) <- rep("x", length(data))
+
+      cli::cli_abort(c(paste0(
+        "At least one layer must contain all faceting variables: ",
+        "{.var {names(vars)}}"
+      ), missing_vars))
     }
-    base <- unique(.int$rbind_dfs(values[has_all]))
+    base <- unique0(vec_rbind(!!!values[has_all]))
     if (!drop) {
       base <- .int$unique_combs(base)
     }

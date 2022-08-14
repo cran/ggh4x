@@ -4,23 +4,22 @@
 #'
 #' The point path geom is used to make a scatterplot wherein the points are
 #' connected with lines in some order. This geom intends to mimic the
-#' \code{type = 'b'} style of base R line plots.
+#' `type = 'b'` style of base R line plots.
 #'
 #' @inheritParams ggplot2::geom_point
 #' @param arrow Arrow specification as created by
-#'   \code{\link[grid:arrow]{grid::arrow()}}.
+#'   [grid::arrow()].
 #'
 #' @export
 #'
-#' @section Aesthetics: \code{geom_pointpath()} understands the following
+#' @section Aesthetics: `geom_pointpath()` understands the following
 #'   aesthetics (required aesthetics are in bold):
-#'   \itemize{\item{\strong{\code{x}}} \item{\strong{\code{y}}}
-#'   \item{\code{alpha}} \item{\code{colour}} \item{\code{group}}
-#'   \item{\code{shape}} \item{\code{size}} \item{\code{stroke}}
-#'   \item{\code{linesize}} \item{\code{linetype}} \item{\code{mult}}}
+#'   \itemize{\item{**`x`**} \item{**`y`**}
+#'   \item{`alpha`} \item{`colour`} \item{`group`}
+#'   \item{`shape`} \item{`size`} \item{`stroke`}
+#'   \item{`linewidth`} \item{`linetype`} \item{`mult`}}
 #'
-#' @details The \code{linesize} aesthetic can be interpreted as the \code{size}
-#'   aesthetic for \code{geom_line()}. The \code{mult} is a numeric value to
+#' @details The `mult` is a numeric value to
 #'   scale the proportion of gaps in the line around points.
 #'
 #'   While the need for this geom is not very apparent, since it can be
@@ -28,7 +27,7 @@
 #'   dynamically adapts the inter-point segments so these  don't deform under
 #'   different aspect ratios or device sizes.
 #'
-#' @return A \emph{Layer} ggproto object.
+#' @return A *Layer* ggproto object.
 #'
 #' @examples
 #' ggplot(pressure, aes(temperature, pressure)) +
@@ -40,9 +39,18 @@ geom_pointpath <- function(
   inherit.aes = TRUE
 ) {
   layer(
-    data = data, mapping = mapping, stat = stat, geom = GeomPointPath,
-    position = position, show.legend = show.legend, inherit.aes = inherit.aes,
-    params = list(na.rm = na.rm, arrow = arrow, ...)
+    data        = data,
+    mapping     = mapping,
+    stat        = stat,
+    geom        = GeomPointPath,
+    position    = position,
+    show.legend = show.legend,
+    inherit.aes = inherit.aes,
+    params = list2(
+      na.rm = na.rm,
+      arrow = arrow,
+      ...
+    )
   )
 }
 
@@ -92,7 +100,7 @@ GeomPointPath <- ggplot2::ggproto(
       gp    = gpar(
         col  = alpha(data$colour, data$alpha),
         fill = alpha(data$colour, data$alpha),
-        lwd  = (data$linesize * .pt),
+        lwd  = (data$linewidth * .pt),
         lty  = data$linetype,
         lineend = "butt",
         linejoin = "round", linemitre = 10
@@ -111,7 +119,7 @@ GeomPointPath <- ggplot2::ggproto(
   # Adding some defaults for lines and mult
   default_aes = ggplot2::aes(
     shape = 19, colour = "black", size = 1.5, fill = NA, alpha = NA,
-    stroke = 0.5, linesize = 0.5, linetype = 1, mult = 0.5
+    stroke = 0.5, linewidth = 0.5, linetype = 1, mult = 0.5
   ),
   non_missing_aes = c("size", "colour")
 )
@@ -209,11 +217,11 @@ makeContext.gapsegmentschain <- function(x) {
   dim(idx) <- NULL
 
   # Use index to format as polyline
-  xy <- .int$new_data_frame(list(
-    x = c(x0, x1)[idx],
-    y = c(y0, y1)[idx],
+  xy <- data_frame0(
+    x  = c(x0,   x1)[idx],
+    y  = c(y0,   y1)[idx],
     id = c(x$id, x$id)[idx]
-  ))
+  )
 
   # Deduplicate points
   n <- nrow(xy)
@@ -248,6 +256,9 @@ makeContext.gapsegments <- function(x) {
   y1 <- convertY(x$y1, "mm", TRUE)
 
   cut <- crop_segment_ends(x0, x1, y0, y1, x$mult)
+  if (!any(cut$keep)) {
+    return(zeroGrob())
+  }
 
   # Filter overshoot
   x$gp <- filter_gp(x$gp, cut$keep)
@@ -337,6 +348,10 @@ crop_segment_ends <- function(x0, x1, y0, y1, r) {
   hyp <- sqrt(dx ^ 2 + dy ^ 2)
   nudge_y <- (dy / hyp) * r
   nudge_x <- (dx / hyp) * r
+
+  # Replace non-finite values with zero #73
+  nudge_y[!is.finite(nudge_y)] <- 0
+  nudge_x[!is.finite(nudge_x)] <- 0
 
   # Calculate new positions
   x0 <- x0 + nudge_x

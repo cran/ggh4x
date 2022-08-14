@@ -4,7 +4,7 @@
 
 #' Extended wrapped facets
 #'
-#' This function behaves like \code{\link[ggplot2]{facet_wrap}()}, but has a few
+#' This function behaves like [ggplot2::facet_wrap()], but has a few
 #' extra options on axis drawing when scales are fixed.
 #'
 #' @inheritParams ggplot2::facet_wrap
@@ -41,7 +41,7 @@
 #' @param strip An object created by a call to a strip function, such as
 #'   [`strip_vanilla`][strip_vanilla()].
 #'
-#' @return A \code{Facet} ggproto object that can be added to a plot.
+#' @return A `Facet` ggproto object that can be added to a plot.
 #' @export
 #' @family facetting functions
 #' @md
@@ -108,13 +108,9 @@ new_wrap_facets <- function(
 
   # Setup dimensions
   if (identical(dir, "v")) {
-    nrow_swap <- ncol
-    ncol_swap <- nrow
-    nrow <- .int$sanitise_dim(nrow_swap)
-    ncol <- .int$sanitise_dim(ncol_swap)
-  } else {
-    nrow <- .int$sanitise_dim(nrow)
-    ncol <- .int$sanitise_dim(ncol)
+    tmp  <- ncol
+    ncol <- nrow
+    nrow <- tmp
   }
   dim <- if (trim_blank) NULL else c(nrow %||% NA, ncol %||% NA)
 
@@ -380,7 +376,8 @@ purge_guide_labels <- function(guide) {
   axis <- guide$children[[is_axis]]
 
   dim <- dim(axis)
-  is_label <- vapply(axis$grobs, inherits, logical(1), "titleGrob")
+  is_label <- vapply(axis$grobs, inherits, logical(1),
+                     what = c("titleGrob", "richtext_grob"))
 
   axis$layout <- axis$layout[!is_label, , drop = FALSE]
   axis$grobs <- axis$grobs[!is_label]

@@ -40,7 +40,7 @@ title. One of "top" (default for a vertical guide), "bottom", "left"
 (default for a horizontal guide), or "right."}
 
 \item{title.theme}{A theme object for rendering the title text. Usually the
-object of \code{\link[ggplot2:element]{element_text()}} is expected. By default, the theme is
+object of \code{\link[ggplot2:element_text]{element_text()}} is expected. By default, the theme is
 specified by \code{legend.title} in \code{\link[ggplot2:theme]{theme()}} or theme.}
 
 \item{title.hjust}{A number specifying horizontal justification of the
@@ -50,7 +50,7 @@ title text.}
 text.}
 
 \item{label.theme}{A theme object for rendering the label text. Usually the
-object of \code{\link[ggplot2:element]{element_text()}} is expected. By default, the theme is
+object of \code{\link[ggplot2:element_text]{element_text()}} is expected. By default, the theme is
 specified by \code{legend.text} in \code{\link[ggplot2:theme]{theme()}}.}
 
 \item{label.hjust}{A numeric specifying horizontal justification of the
@@ -72,7 +72,7 @@ spacing between label rows and columns. Internally defaults to half the
 size of the title.}
 
 \item{default.units}{A \code{character(1)} indicating the default units to
-use if the \code{spacing.*} arguments are only given as numeric vectors.}
+use if the \verb{spacing.*} arguments are only given as numeric vectors.}
 
 \item{direction}{A character string indicating the direction of the guide.
 One of "horizontal" or "vertical."}

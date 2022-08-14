@@ -49,11 +49,7 @@ often aesthetics, used to set an aesthetic to a fixed value, like
 \code{colour = "red"} or \code{size = 3}. They may also be parameters
 to the paired geom/stat.}
 
-\item{hjust}{horizontal and vertical justification of the grob.  Each
-justification value should be a number between 0 and 1.  Defaults to 0.5
-for both, centering each pixel over its data location.}
-
-\item{vjust}{horizontal and vertical justification of the grob.  Each
+\item{hjust, vjust}{horizontal and vertical justification of the grob.  Each
 justification value should be a number between 0 and 1.  Defaults to 0.5
 for both, centering each pixel over its data location.}
 
@@ -81,25 +77,25 @@ flexible transformations of the data, but comes at an efficiency cost.
 }
 \details{
 For each pixel in a raster, makes a vertex for each of the four
-  corner points. These coordinates can then by transformed by
-  \code{coord}-functions such as \code{\link[ggplot2]{coord_polar}} or
-  \code{position}-functions such as
-  \code{\link[ggh4x]{position_lineartrans}}. Currently substitutes group
-  aesthetics right before drawing in favour of pixel identifiers.
+corner points. These coordinates can then by transformed by
+\code{coord}-functions such as \code{\link[ggplot2:coord_polar]{ggplot2::coord_polar()}} or
+\code{position}-functions such as
+\code{\link[=position_lineartrans]{position_lineartrans()}}. Currently substitutes group
+aesthetics right before drawing in favour of pixel identifiers.
 }
 \section{Aesthetics}{
 
 
-  \code{geom_raster()} understands the following aesthetics (required
-  aesthetics are in bold):
+\code{geom_raster()} understands the following aesthetics (required
+aesthetics are in bold):
 
-  \itemize{
-    \item \strong{x}
-    \item \strong{y}
-    \item fill
-    \item alpha
-    \item group
-  }
+\itemize{
+\item \strong{x}
+\item \strong{y}
+\item fill
+\item alpha
+\item group
+}
 }
 
 \examples{
@@ -118,5 +114,5 @@ ggplot(df, aes(x, y, fill = z)) +
                                                      shear = c(1, 0)))
 }
 \seealso{
-\code{\link[ggplot2:geom_tile]{geom_raster}}
+\code{\link[ggplot2:geom_tile]{geom_raster()}}
 }

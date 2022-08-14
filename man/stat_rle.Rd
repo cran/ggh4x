@@ -40,7 +40,7 @@ will be used as the layer data. A \code{function} can be created
 from a \code{formula} (e.g. \code{~ head(.x, 10)}).}
 
 \item{geom}{Use to override the default connection between
-\code{geom_density()} and \code{stat_density()}.}
+\code{geom_rect()} and \code{stat_rle()}.}
 
 \item{position}{Position adjustment, either as a string, or the result of
 a call to a position adjustment function.}
@@ -53,11 +53,11 @@ to the paired geom/stat.}
 \item{align}{A \code{character} of length one that effect the computed
 \code{start} and \code{end} variables. One of the following:
 \describe{
-  \item{\code{"none"}}{Take exact start and end \code{x} values.}
-  \item{\code{"center"}}{Return start and end \code{x} values in between an
-  end and the subsequent start.}
-  \item{\code{"start"}}{Align start values with previous end values.}
-  \item{\code{"end"}}{Align end values with next start values.}
+\item{\code{"none"}}{Take exact start and end \code{x} values.}
+\item{\code{"center"}}{Return start and end \code{x} values in between an
+end and the subsequent start.}
+\item{\code{"start"}}{Align start values with previous end values.}
+\item{\code{"end"}}{Align end values with next start values.}
 }}
 
 \item{na.rm}{If \code{FALSE}, the default, missing values are removed with
@@ -92,24 +92,24 @@ lengths are calculated for the \code{label} aesthetic.
 }
 \section{Aesthetics}{
  \code{stat_rle()} understands the following
-  aesthetics (required aesthetics are in bold)
+aesthetics (required aesthetics are in bold)
 \itemize{
-  \item{\strong{x}}
-  \item{\strong{label}}
-  \item{group}
+\item{\strong{x}}
+\item{\strong{label}}
+\item{group}
 }
 }
 
 \section{Computed variables}{
 
 \describe{
-  \item{start}{The \code{x} values at the start of every run.}
-  \item{end}{The \code{x} values at the end of every run.}
-  \item{start_id}{The index where a run starts.}
-  \item{end_id}{The index where a run ends.}
-  \item{run_id}{The index of a run.}
-  \item{runlength}{The length of a run.}
-  \item{runvalue}{The value associated with a run.}
+\item{start}{The \code{x} values at the start of every run.}
+\item{end}{The \code{x} values at the end of every run.}
+\item{start_id}{The index where a run starts.}
+\item{end_id}{The index where a run ends.}
+\item{run_id}{The index of a run.}
+\item{runlength}{The length of a run.}
+\item{runvalue}{The value associated with a run.}
 }
 }
 

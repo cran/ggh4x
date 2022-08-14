@@ -40,7 +40,7 @@ left, or right.}
 \item{label}{A \code{logical(1)}. If \code{TRUE}, labels are drawn at the
 dendrogram leaves. If \code{FALSE}, labels are not drawn.}
 
-\item{trunc_lower}{The lower and upper range of the truncated
+\item{trunc_lower, trunc_upper}{The lower and upper range of the truncated
 axis:
 \itemize{
 \item \code{NULL} to not perform any truncation.
@@ -51,27 +51,12 @@ mapped positions as \code{numeric}.
 \item A \code{unit} object.
 }}
 
-\item{trunc_upper}{The lower and upper range of the truncated
-axis:
-\itemize{
-\item \code{NULL} to not perform any truncation.
-\item A \code{function} that takes the break positions as input and returns the lower
-or upper boundary. Note that also for discrete scales, positions are the
-mapped positions as \code{numeric}.
-\item A \code{numeric} value in data units for the lower and upper boundaries.
-\item A \code{unit} object.
-}}
-
-\item{colour}{A \code{character(1)} with a valid colour for colouring the
-axis text, axis ticks and axis line. Overrules the colour assigned by the
-theme.}
-
-\item{color}{A \code{character(1)} with a valid colour for colouring the
+\item{colour, color}{A \code{character(1)} with a valid colour for colouring the
 axis text, axis ticks and axis line. Overrules the colour assigned by the
 theme.}
 
 \item{dendro}{Relevant plotting data for a dendrogram such as those returned
-by \code{\link[ggdendro]{dendro_data}}.}
+by \code{\link[ggdendro:dendro_data]{ggdendro::dendro_data()}}.}
 }
 \value{
 A \emph{dendroguide} class object.
@@ -79,12 +64,12 @@ A \emph{dendroguide} class object.
 \description{
 Visual representation of a discrete variable with hierarchical relationships
 between members, like those detailed in
-\code{\link[=scale_x_dendrogram]{scale_(x|y)_dendrogram)}}.
+\code{\link[=scale_x_dendrogram]{scale_(x|y)_dendrogram)()}}.
 }
 \details{
 The dendrogram guide inherits graphical elements from the
-  \code{axis.ticks} theme element. However, the size of the dendrogram is set
-  to 10 times the \code{axis.ticks.length} theme element.
+\code{axis.ticks} theme element. However, the size of the dendrogram is set
+to 10 times the \code{axis.ticks.length} theme element.
 }
 \examples{
 clust <- hclust(dist(USArrests), "ave")

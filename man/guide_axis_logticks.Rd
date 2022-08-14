@@ -28,7 +28,7 @@ specified in \code{\link[ggplot2:labs]{labs()}} is used for the title.}
 \item{check.overlap}{silently remove overlapping labels,
 (recursively) prioritizing the first, last, and middle labels.}
 
-\item{angle}{Compared to setting the angle in \code{\link[ggplot2:theme]{theme()}} / \code{\link[ggplot2:element]{element_text()}},
+\item{angle}{Compared to setting the angle in \code{\link[ggplot2:theme]{theme()}} / \code{\link[ggplot2:element_text]{element_text()}},
 this also uses some heuristics to automatically pick the \code{hjust} and \code{vjust} that
 you probably want.}
 
@@ -46,7 +46,7 @@ left, or right.}
 has been manually rescaled (\code{TRUE}) or the scale takes care of the
 transformation (\code{FALSE}).}
 
-\item{trunc_lower}{The lower and upper range of the truncated
+\item{trunc_lower, trunc_upper}{The lower and upper range of the truncated
 axis:
 \itemize{
 \item \code{NULL} to not perform any truncation.
@@ -57,22 +57,7 @@ mapped positions as \code{numeric}.
 \item A \code{unit} object.
 }}
 
-\item{trunc_upper}{The lower and upper range of the truncated
-axis:
-\itemize{
-\item \code{NULL} to not perform any truncation.
-\item A \code{function} that takes the break positions as input and returns the lower
-or upper boundary. Note that also for discrete scales, positions are the
-mapped positions as \code{numeric}.
-\item A \code{numeric} value in data units for the lower and upper boundaries.
-\item A \code{unit} object.
-}}
-
-\item{colour}{A \code{character(1)} with a valid colour for colouring the
-axis text, axis ticks and axis line. Overrules the colour assigned by the
-theme.}
-
-\item{color}{A \code{character(1)} with a valid colour for colouring the
+\item{colour, color}{A \code{character(1)} with a valid colour for colouring the
 axis text, axis ticks and axis line. Overrules the colour assigned by the
 theme.}
 
@@ -85,16 +70,26 @@ An \emph{axis_logticks} guide class object.
 }
 \description{
 This axis guide is probably best described as
-\code{\link[ggplot2]{annotation_logticks}} but implemented as a guide instead
+\code{\link[ggplot2:annotation_logticks]{ggplot2::annotation_logticks()}} but implemented as a guide instead
 of a geom. The tick marks probably best suit log10 transformations.
 }
-\details{
-The length of minor ticks can be controlled relative to the length
-  of major ticks by setting \code{ggh4x.axis.ticks.length.minor} as a
-  \code{rel} object. Likewise the size of the smallest ticks are controlled
-  by the \code{ggh4x.axis.ticks.length.minor}, also relative to the major
-  ticks.
+\section{Theme elements}{
+
+This axis guide uses the following the theme elements:
+
+\describe{
+\item{\code{\link[=theme_extensions]{ggh4x.axis.ticks.length.minor}}}{
+An \code{\link[=rel]{rel()}} object to set the size of minor ticks relative to the
+length of major ticks (\code{axis.ticks.length}). Defaults to \code{rel(2/3)}.
 }
+\item{\code{\link[=theme_extensions]{ggh4x.axis.ticks.length.mini}}}{
+An \code{\link[=rel]{rel()}} object to set the size of smallest ticks, also relative to
+the length of major ticks (\code{axis.ticks.length}). Defaults to
+\code{rel(1/3)}.
+}
+}
+}
+
 \examples{
 # The guide works well out of the box with log10 scales
 p <- ggplot(pressure, aes(temperature, pressure)) +
@@ -120,6 +115,7 @@ Other axis-guides:
 \code{\link{guide_axis_manual}()},
 \code{\link{guide_axis_minor}()},
 \code{\link{guide_axis_nested}()},
+\code{\link{guide_axis_scalebar}()},
 \code{\link{guide_axis_truncated}()}
 }
 \concept{axis-guides}

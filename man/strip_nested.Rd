@@ -42,7 +42,7 @@ different elements to individual strips, possibly repeating the elements to
 match the number of strips through \code{rep_len()}.}
 }
 \value{
-A \code{StripNested} ggproto object that can ge given as an argument to
+A \code{StripNested} ggproto object that can be given as an argument to
 facets in ggh4x.
 }
 \description{
@@ -60,16 +60,16 @@ to be merged when higher-layer strips are different, i.e. they can bleed
 over hierarchies. Suppose the \code{strip_vanilla()} behaviour would be the
 following for strips:
 
-\code{[_1_][_2_][_2_]} \cr \code{[_3_][_3_][_4_]}
+\verb{[_1_][_2_][_2_]} \cr \verb{[_3_][_3_][_4_]}
 
 In such case, the default \code{bleed = FALSE} argument would result in the
 following:
 
-\code{[_1_][___2____]} \cr \code{[_3_][_3_][_4_]}
+\verb{[_1_][___2____]} \cr \verb{[_3_][_3_][_4_]}
 
 Whereas \code{bleed = TRUE} would allow the following:
 
-\code{[_1_][___2____]} \cr \code{[___3____][_4_]}
+\verb{[_1_][___2____]} \cr \verb{[___3____][_4_]}
 }
 \examples{
 # A standard plot
@@ -88,6 +88,7 @@ p + facet_wrap2(vars(cyl, drv), strip = strip_nested(bleed = TRUE))
 }
 \seealso{
 Other strips: 
+\code{\link{strip_split}()},
 \code{\link{strip_themed}()},
 \code{\link{strip_vanilla}()}
 }

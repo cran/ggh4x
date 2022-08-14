@@ -244,6 +244,9 @@ ggplot(df, aes(log10(x))) +
   facetted_pos_scales(x = list(scale_x_continuous())) +
   ggtitle("facetted scale +\npre-transformation")
 
+## ----panel_size_null----------------------------------------------------------
+p + force_panelsizes(rows = unit(2, "cm"), cols = unit(2, "in"))
+
 ## ----panel_sizes--------------------------------------------------------------
 lvls <- c("Points", "Density")
 g <- ggplot(faithful) +

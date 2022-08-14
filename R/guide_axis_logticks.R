@@ -3,24 +3,33 @@
 #' Axis guide with ticks for logarithmic breaks
 #'
 #' This axis guide is probably best described as
-#' \code{\link[ggplot2]{annotation_logticks}} but implemented as a guide instead
+#' [ggplot2::annotation_logticks()] but implemented as a guide instead
 #' of a geom. The tick marks probably best suit log10 transformations.
 #'
 #' @inheritParams guide_axis_minor
-#' @param prescaled A \code{logical} of length one, indicating whether the data
-#'   has been manually rescaled (\code{TRUE}) or the scale takes care of the
-#'   transformation (\code{FALSE}).
+#' @param prescaled A `logical` of length one, indicating whether the data
+#'   has been manually rescaled (`TRUE`) or the scale takes care of the
+#'   transformation (`FALSE`).
 #' @param base When this is provided, the guide takes this as the base for the
 #'   log transformation instead of trying to guess the base. It is recommended
-#'   to use this argument if the base is not \code{10}.
+#'   to use this argument if the base is not `10`.
 #'
-#' @details The length of minor ticks can be controlled relative to the length
-#'   of major ticks by setting \code{ggh4x.axis.ticks.length.minor} as a
-#'   \code{rel} object. Likewise the size of the smallest ticks are controlled
-#'   by the \code{ggh4x.axis.ticks.length.minor}, also relative to the major
-#'   ticks.
+#' @section Theme elements:
+#'   This axis guide uses the following the theme elements:
 #'
-#' @return An \emph{axis_logticks} guide class object.
+#'   \describe{
+#'     \item{[`ggh4x.axis.ticks.length.minor`][theme_extensions]}{
+#'       An [`rel()`] object to set the size of minor ticks relative to the
+#'       length of major ticks (`axis.ticks.length`). Defaults to `rel(2/3)`.
+#'     }
+#'     \item{[`ggh4x.axis.ticks.length.mini`][theme_extensions]}{
+#'       An [`rel()`] object to set the size of smallest ticks, also relative to
+#'       the length of major ticks (`axis.ticks.length`). Defaults to
+#'       `rel(1/3)`.
+#'     }
+#'   }
+#'
+#' @return An *axis_logticks* guide class object.
 #' @export
 #'
 #' @family axis-guides
@@ -128,8 +137,10 @@ guide_train.axis_logticks <- function(guide, scale, aesthetic = NULL) {
                   c(length(major_breaks), length(logbreaks)))
 
 
-  empty_ticks <- .int$new_data_frame(
-    list(aesthetic = numeric(), .value = numeric(0), .label = character())
+  empty_ticks <- data_frame0(
+    aesthetic = numeric(0),
+    .value    = numeric(0),
+    .label    = character(0)
   )
 
   if (length(intersect(scale$aesthetics, guide$available_aes)) == 0) {
@@ -144,8 +155,7 @@ guide_train.axis_logticks <- function(guide, scale, aesthetic = NULL) {
     } else {
       breaks
     }
-    ticks <- .int$new_data_frame(setNames(list(mapped_breaks),
-                                          aesthetic))
+    ticks <- new_data_frame(setNames(list(mapped_breaks), aesthetic))
     ticks$.value <- breaks
     ticks$.label <- ""
     ticks$.label[is_major] <- scale$get_labels(breaks[is_major])
@@ -193,8 +203,8 @@ make_logbreaks <- function(base = 10, ticks_per_base = base - 1,
   mediumticks <- floor(ticks_per_base/2)
   minority[ cycleIdx == mediumticks ] <- 1
 
-  tickdf <- .int$new_data_frame(list(value = ticks, minority = minority),
-                           n = length(ticks))
+  tickdf <- data_frame0(value = ticks, minority = minority,
+                        .size = length(ticks))
 
   return(tickdf)
 }

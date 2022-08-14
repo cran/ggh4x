@@ -28,7 +28,7 @@ specified in \code{\link[ggplot2:labs]{labs()}} is used for the title.}
 \item{check.overlap}{silently remove overlapping labels,
 (recursively) prioritizing the first, last, and middle labels.}
 
-\item{angle}{Compared to setting the angle in \code{\link[ggplot2:theme]{theme()}} / \code{\link[ggplot2:element]{element_text()}},
+\item{angle}{Compared to setting the angle in \code{\link[ggplot2:theme]{theme()}} / \code{\link[ggplot2:element_text]{element_text()}},
 this also uses some heuristics to automatically pick the \code{hjust} and \code{vjust} that
 you probably want.}
 
@@ -46,7 +46,7 @@ left, or right.}
 hierarchies should be broken up. Internally defaults to \code{"."} to match
 \code{interaction}'s default delimiter.}
 
-\item{trunc_lower}{The lower and upper range of the truncated
+\item{trunc_lower, trunc_upper}{The lower and upper range of the truncated
 axis:
 \itemize{
 \item \code{NULL} to not perform any truncation.
@@ -57,22 +57,7 @@ mapped positions as \code{numeric}.
 \item A \code{unit} object.
 }}
 
-\item{trunc_upper}{The lower and upper range of the truncated
-axis:
-\itemize{
-\item \code{NULL} to not perform any truncation.
-\item A \code{function} that takes the break positions as input and returns the lower
-or upper boundary. Note that also for discrete scales, positions are the
-mapped positions as \code{numeric}.
-\item A \code{numeric} value in data units for the lower and upper boundaries.
-\item A \code{unit} object.
-}}
-
-\item{colour}{A \code{character(1)} with a valid colour for colouring the
-axis text, axis ticks and axis line. Overrules the colour assigned by the
-theme.}
-
-\item{color}{A \code{character(1)} with a valid colour for colouring the
+\item{colour, color}{A \code{character(1)} with a valid colour for colouring the
 axis text, axis ticks and axis line. Overrules the colour assigned by the
 theme.}
 
@@ -90,9 +75,25 @@ grouping with a line spanning the earlier labels.
 }
 \details{
 The guide itself makes no effort to group and order labels. To get
-  nice groupings, consider re-ordering the levels of factor variables, or try
-  setting the 'breaks' argument of a scale appropriately.
+nice groupings, consider re-ordering the levels of factor variables, or try
+setting the 'breaks' argument of a scale appropriately.
 }
+\section{Theme elements}{
+
+This axis guide uses the following the theme elements:
+
+\describe{
+\item{\code{\link[=theme_extensions]{ggh4x.axis.nestline.x/y}}}{
+An \code{\link[=element_line]{element_line()}} object to alter the display of the line
+separating different layers of labels.
+}
+\item{\code{\link[=theme_extensions]{ggh4x.axis.nesttext.x/y}}}{
+An \code{\link[=element_text]{element_text()}} object to differentiate text higher up in the
+hierarchy, from the text closest to the axis line.
+}
+}
+}
+
 \examples{
 # The defaults are suited for interaction variables
 ggplot(mpg, aes(interaction(cyl, class), hwy)) +
@@ -117,14 +118,15 @@ ggplot(mpg, aes(interaction(cyl, class), hwy)) +
   theme(ggh4x.axis.nestline = element_line(linetype = 2))
 }
 \seealso{
-\code{\link[ggplot2]{guide_axis}} for the classic axis
-  documentation. \cr \code{\link[ggh4x]{weave_factors}} for an alternative to
-  \code{interaction()}.
+\code{\link[ggplot2:guide_axis]{ggplot2::guide_axis()}} for the classic axis
+documentation. \cr \code{\link[=weave_factors]{weave_factors()}} for an alternative to
+\code{interaction()}.
 
 Other axis-guides: 
 \code{\link{guide_axis_logticks}()},
 \code{\link{guide_axis_manual}()},
 \code{\link{guide_axis_minor}()},
+\code{\link{guide_axis_scalebar}()},
 \code{\link{guide_axis_truncated}()}
 }
 \concept{axis-guides}

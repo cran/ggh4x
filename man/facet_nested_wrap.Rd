@@ -33,9 +33,7 @@ For compatibility with the classic interface, can also be a
 formula or character vector. Use either a one sided formula, \code{~a + b},
 or a character vector, \code{c("a", "b")}.}
 
-\item{nrow}{Number of rows and columns.}
-
-\item{ncol}{Number of rows and columns.}
+\item{nrow, ncol}{Number of rows and columns.}
 
 \item{scales}{A \code{character(1)} or \code{logical(1)} whether scales are shared
 across facets or allowed to vary. One of the following:
@@ -77,8 +75,8 @@ one with \code{vars(cyl, am)}. Each output
 column gets displayed as one separate line in the strip
 label. This function should inherit from the "labeller" S3 class
 for compatibility with \code{\link[ggplot2:labeller]{labeller()}}. You can use different labeling
-functions for different kind of labels, for example use \code{\link[ggplot2:labellers]{label_parsed()}} for
-formatting facet labels. \code{\link[ggplot2:labellers]{label_value()}} is used by default,
+functions for different kind of labels, for example use \code{\link[ggplot2:label_parsed]{label_parsed()}} for
+formatting facet labels. \code{\link[ggplot2:label_value]{label_value()}} is used by default,
 check it for more details and pointers to other options.}
 
 \item{as.table}{If \code{TRUE}, the default, the facets are laid out like
@@ -98,8 +96,8 @@ either of the four sides by setting \code{strip.position = c("top",
   "bottom", "left", "right")}}
 
 \item{nest_line}{a theme element, either \code{element_blank()} or inheriting
-from \code{\link[ggplot2]{element_line}()}. This element inherits from
-the \code{ggh4x.facet.nestline} element in the theme.}
+from \code{\link[ggplot2:element]{ggplot2::element_line()}}. This element inherits from
+the \code{\link[=theme_extensions]{ggh4x.facet.nestline}} element in the theme.}
 
 \item{resect}{a \code{unit} vector of length 1, indicating how much the
 nesting line should be shortened.}
@@ -110,10 +108,10 @@ arguments are taken literally, even when there are more than needed to
 fit all panels.}
 
 \item{strip}{An object created by a call to a strip function, such as
-\code{\link[ggh4x]{strip_nested}()}.}
+\code{\link[=strip_nested]{strip_nested()}}.}
 
-\item{bleed}{Deprecated. Use `strip = strip_nested(bleed = ...)` instead.
-See details.}
+\item{bleed}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} the \code{bleed} argument has
+moved to the \code{strip_nested()} function.}
 }
 \value{
 A \code{FacetNestedWrap} ggproto object that can be added to a plot.
@@ -124,18 +122,18 @@ layout, and nests grouped facets where possible.
 }
 \details{
 This function inherits the capabilities of
-  \code{\link[ggh4x]{facet_wrap2}()}.
+\code{\link[=facet_wrap2]{facet_wrap2()}}.
 
-  This function only merges strips in the same row or column as they appear
-  through regular \code{facet_wrap()} layout behaviour.
+This function only merges strips in the same row or column as they appear
+through regular \code{facet_wrap()} layout behaviour.
 
-  Hierarchies are inferred from the order of variables supplied to
-  \code{facets}. The first variable is interpreted to be the outermost
-  variable, while the last variable is interpreted to be the innermost
-  variable. They display order is always such that the outermost
-  variable is placed the furthest away from the panels. For more information
-  about the nesting of strips, please visit the documentation of
-  \code{\link[ggh4x]{strip_nested}()}.
+Hierarchies are inferred from the order of variables supplied to
+\code{facets}. The first variable is interpreted to be the outermost
+variable, while the last variable is interpreted to be the innermost
+variable. They display order is always such that the outermost
+variable is placed the furthest away from the panels. For more information
+about the nesting of strips, please visit the documentation of
+\code{\link[=strip_nested]{strip_nested()}}.
 }
 \examples{
 # A standard plot
@@ -151,10 +149,10 @@ p + facet_nested_wrap(vars(cyl, drv),
   theme(ggh4x.facet.nestline = element_line(linetype = 3))
 }
 \seealso{
-See \code{\link[ggh4x]{strip_nested}} for nested strips. See
-  \code{\link[ggplot2]{facet_wrap}} for descriptions of the original
-  arguments. See \code{\link[grid]{unit}} for the construction of a
-  \code{unit} vector.
+See \code{\link[=strip_nested]{strip_nested()}} for nested strips. See
+\code{\link[ggplot2:facet_wrap]{ggplot2::facet_wrap()}} for descriptions of the original
+arguments. See \code{\link[grid:unit]{grid::unit()}} for the construction of a
+\code{unit} vector.
 
 Other facetting functions: 
 \code{\link{facet_grid2}()},

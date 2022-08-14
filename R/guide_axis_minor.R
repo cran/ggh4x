@@ -7,11 +7,17 @@
 #'
 #' @inheritParams guide_axis_truncated
 #'
-#' @details The length of minor ticks can be controlled relative to the length
-#'   of major ticks by setting \code{ggh4x.axis.ticks.length.minor} as a
-#'   \code{rel} object.
+#' @section Theme elements:
+#'   This axis guide uses the following the theme elements:
 #'
-#' @return An \emph{axis_minor} guide class object.
+#'   \describe{
+#'     \item{[`ggh4x.axis.ticks.length.minor`][theme_extensions]}{
+#'       An [`rel()`] object to set the size of minor ticks relative to the
+#'       length of major ticks (`axis.ticks.length`). Defaults to `rel(2/3)`.
+#'     }
+#'   }
+#'
+#' @return An *axis_minor* guide class object.
 #' @export
 #'
 #' @family axis-guides
@@ -77,9 +83,9 @@ guide_train.axis_minor <- function(
   breaks <- union(breaks_major, breaks_minor)
   is_major <- breaks %in% breaks_major
 
-  empty_ticks <- .int$new_data_frame(
-    list(aesthetic = numeric(), .value = numeric(0), .label = character(),
-         .minority = logical(0))
+  empty_ticks <- data_frame0(
+    aesthetic = numeric(), .value = numeric(0), .label = character(),
+    .minority = logical(0)
   )
   names(empty_ticks)[1] <- aesthetic
   if (length(intersect(scale$aesthetics, guide$available_aes)) == 0) {
@@ -94,8 +100,7 @@ guide_train.axis_minor <- function(
     } else {
       breaks
     }
-    ticks <- .int$new_data_frame(setNames(list(mapped_breaks),
-                                          aesthetic))
+    ticks <- new_data_frame(setNames(list(mapped_breaks), aesthetic))
     ticks$.value <- breaks
     ticks$.label <- ""
     ticks$.label[is_major] <- scale$get_labels(breaks[is_major])
