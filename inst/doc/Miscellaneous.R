@@ -133,3 +133,21 @@ ggplot(diamonds, aes(cut, fill = clarity)) +
   scale_x_discrete(labels = NULL) +
   coord_polar()
 
+## -----------------------------------------------------------------------------
+p <- ggplot(mpg, aes(displ - mean(displ), hwy - mean(hwy))) +
+  geom_point() +
+  theme(axis.line = element_line())
+
+p + coord_axes_inside()
+
+## -----------------------------------------------------------------------------
+p + coord_axes_inside(labels_inside = TRUE) +
+  scale_x_continuous(
+    labels = ~ ifelse(.x == 0, "", .x),
+    guide  = "axis_minor"
+  ) +
+  scale_y_continuous(
+    labels = ~ ifelse(.x == 0, "", .x),
+    guide  = "axis_truncated"
+  )
+

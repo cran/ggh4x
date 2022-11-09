@@ -219,6 +219,20 @@ p +
     )
   ))
 
+## ---- eval=FALSE--------------------------------------------------------------
+#  p +
+#    facet_wrap(vars(class), nrow = 1, scales = "free_x") +
+#    xlim(range(mpg$displ)) +
+#    scale_x_facet(
+#      COL %% 2 == 0,
+#      labels = NULL, limits = xlim
+#    ) +
+#    scale_x_facet(
+#      class %in% c("midsize", "suv", "subcompact"),
+#      limits = xlim,
+#      guide = guide_axis_colour(colour = "red")
+#    )
+
 ## ----position_scales_stats, fig.show='hold', fig.width = 3--------------------
 set.seed(0)
 df <- data.frame(

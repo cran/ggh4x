@@ -1,7 +1,20 @@
+# ggh4x 0.2.3
+
+This is a small release updating some of the internals to better use the public
+interface to ggplot2 and play well with the latest release of ggplot2 (3.4.0).
+
+## New features
+
+* New `scale_{x/y}_facet()` to provide a more convenient syntax for 
+  `facetted_pos_scales()` (#76).
+* New `geom_box()`, as a more flexible variant of `geom_rect()`/`geom_tile()`
+  that can take any two of x/y, width/height, xmin/ymin or xmax/ymax, and
+  supports rounded corners.
+
 # ggh4x 0.2.2
 
 This is a small release updating the documentation to be compatible with HTML5, 
-compatability for upcoming ggplot2 3.4.0, along with four small features.
+compatibility for upcoming ggplot2 3.4.0, along with four small features.
 
 ## New features
 
