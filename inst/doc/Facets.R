@@ -32,6 +32,9 @@ p + facet_grid2(vars(year), vars(drv), scales = "free_x", independent = "x")
 p + facet_grid2(vars(year), vars(drv), 
                 scales = "free", independent = "y", space = "free_x")
 
+## ----grid_render_empty--------------------------------------------------------
+p + facet_grid2(vars(drv), vars(cyl), render_empty = FALSE)
+
 ## ----nested_grid--------------------------------------------------------------
 new_iris <- transform(
   iris, 
@@ -110,8 +113,8 @@ p + facet_manual(vars(drv), design = design)
 
 ## ----strip_clip, fig.show='hold', fig.width = 3-------------------------------
 p2 <- p +
-  theme(strip.background = element_rect(colour = "black", size = 2),
-        axis.line.y = element_line(colour = "black", size = 2))
+  theme(strip.background = element_rect(colour = "black", linewidth = 2),
+        axis.line.y = element_line(colour = "black", linewidth = 2))
 
 p2 + facet_wrap2(vars(year), strip = strip_vanilla(clip = "on")) +
   ggtitle('clip = "on"')
@@ -262,18 +265,23 @@ ggplot(df, aes(log10(x))) +
 p + force_panelsizes(rows = unit(2, "cm"), cols = unit(2, "in"))
 
 ## ----panel_sizes--------------------------------------------------------------
-lvls <- c("Points", "Density")
+lvls <- factor(c("Points", "Density"), c("Points", "Density"))
 g <- ggplot(faithful) +
   geom_point(aes(waiting, eruptions),
-             data = ~ cbind(.x, facet = factor(lvls[1], lvls))) +
+             data = ~ cbind(.x, facet = lvls[1])) +
   geom_density(aes(y = eruptions),
-               data = ~ cbind(faithful, facet = factor(lvls[2], lvls))) +
-  facet_grid(~ facet, scales = "free_x") +
-  force_panelsizes(cols = c(1, 0.2), 
-                   rows = c(0.5),
-                   respect = TRUE)
+               data = ~ cbind(faithful, facet = lvls[2])) +
+  facet_grid(~ facet, scales = "free_x")
+
+g + force_panelsizes(cols = c(1, 0.3), rows = c(0.5), respect = TRUE)
+
+## ----panel_sizes_total--------------------------------------------------------
+g <- g + force_panelsizes(
+  cols = c(1, 0.3), total_width = unit(6, "cm"), 
+  total_height = unit(4, "cm")
+)
 g
 
 ## ----panel_sizes_2------------------------------------------------------------
-g + facetted_pos_scales(x = list(NULL, scale_x_continuous(breaks = c(0, 0.2, 0.4))))
+g + scale_x_facet(facet == "Density", breaks = c(0, 0.2, 0.4))
 

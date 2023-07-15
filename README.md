@@ -7,9 +7,9 @@
 
 [![Codecov test
 coverage](https://codecov.io/gh/teunbrand/ggh4x/branch/master/graph/badge.svg)](https://app.codecov.io/gh/teunbrand/ggh4x?branch=master)
-[![R-CMD-check](https://github.com/teunbrand/ggh4x/workflows/R-CMD-check/badge.svg)](https://github.com/teunbrand/ggh4x/actions)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/ggh4x)](https://CRAN.R-project.org/package=ggh4x)
+[![R-CMD-check](https://github.com/teunbrand/ggh4x/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/teunbrand/ggh4x/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 The ggh4x package is a ggplot2 extension package. It provides some
@@ -175,6 +175,11 @@ g <- g + facetted_pos_scales(x = position_scales)
 size <- 2 / (1 + sqrt(5))
 g <- g + force_panelsizes(cols = c(1, size, size ^ 2), respect = TRUE)
 g
+#> Warning: The S3 guide system was deprecated in ggplot2 3.5.0.
+#> ℹ It has been replaced by a ggproto system that can be extended.
+#> This warning is displayed once every 8 hours.
+#> Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+#> generated.
 ```
 
 <img src="man/figures/README-facets-1.png" width="80%" style="display: block; margin: auto;" />

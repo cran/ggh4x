@@ -21,8 +21,13 @@ test_that("facet_grid2 can duplicate axes and remove labels", {
   b <- vapply(b, function(x){length(x$children[[2]]$grobs)}, integer(1))
   l <- vapply(l, function(x){length(x$children[[2]]$grobs)}, integer(1))
 
-  expect_equal(b, c(2L, 2L, 2L, 2L))
-  expect_equal(l, c(1L, 1L, 2L, 2L))
+  if (utils::packageVersion("ggplot2") <= "3.4.2") {
+    expect_equal(b, c(2L, 2L, 2L, 2L))
+    expect_equal(l, c(1L, 1L, 2L, 2L))
+  } else {
+    expect_equal(b, c(3L, 3L, 3L, 3L))
+    expect_equal(l, c(2L, 2L, 3L, 3L))
+  }
 })
 
 test_that("facet_grid2 can have free and independent scales", {
@@ -61,6 +66,27 @@ test_that("facet_grid2 respects aspect ratio", {
 
   expect_false(case_null$respect)
   expect_true(case_asp$respect)
+})
+
+test_that("facet_grid2 can use `render_empty` to omit panels", {
+
+  case_null <- p + facet_grid2(vars(cyl), vars(gear), render_empty = TRUE)
+  case_test <- p + facet_grid2(vars(cyl), vars(gear), render_empty = FALSE)
+
+  case_null <- ggplotGrob(case_null)
+  case_test <- ggplotGrob(case_test)
+
+  is_panel_null <- grepl("^panel", case_null$layout$name)
+  is_panel_test <- grepl("^panel", case_test$layout$name)
+
+  expect_equal(is_panel_null, is_panel_test)
+
+  null_zero <- vapply(case_null$grobs[is_panel_null], inherits, what = "zeroGrob", logical(1))
+  expect_true(!any(null_zero))
+
+  test_zero <- vapply(case_test$grobs[is_panel_test], inherits, what = "zeroGrob", logical(1))
+  expect_equal(test_zero, c(rep(FALSE, 7), TRUE, FALSE))
+
 })
 
 test_that("facet_grid2 warns about inappropriate arguments", {

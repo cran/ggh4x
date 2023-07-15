@@ -2,8 +2,12 @@
 
 #' Scale bar axis guide
 #'
+#' `r lifecycle::badge("questioning")`
 #' This axis guides draws a scale bar to indicate a distance rather than
 #' mark absolute values.
+#' The function is questioned due to
+#' a possible migration of guide functions after ggplot2 releases a new guide
+#' system.
 #'
 #' @inheritParams guide_axis_truncated
 #' @param size A `numeric(1)` for a distance to indicate, in data units. If
@@ -80,7 +84,7 @@ guide_axis_scalebar <- function(
       available_aes = c("x", "y"),
       name     = "axis"
     ),
-    class = c("guide", "axis_scalebar", "axis")
+    class = c("guide", "axis_scalebar", "axis_ggh4x", "axis")
   )
 }
 

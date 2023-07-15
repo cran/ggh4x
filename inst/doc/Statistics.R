@@ -180,14 +180,11 @@ g + geom_ribbon(aes(ymin = pmin(psavert, uempmed),
                 alpha = 0.8)
 
 ## -----------------------------------------------------------------------------
-g + stat_difference(aes(ymin = psavert, ymax = uempmed),
-                  alpha  = 0.8)
-
-## -----------------------------------------------------------------------------
-g + stat_difference(aes(ymin = psavert, ymax = uempmed),
-                    levels = c("More uempmed", "More psavert", NA),
-                    alpha  = 0.8) +
-  scale_fill_discrete(na.translate = FALSE)
+g + stat_difference(
+  aes(ymin = psavert, ymax = uempmed),
+  levels = c("More uempmed", "More psavert"),
+  alpha  = 0.8
+)
 
 ## ---- fig.show='hold', fig.width = 3------------------------------------------
 df <- data.frame(

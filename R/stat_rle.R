@@ -18,8 +18,10 @@
 #'   \item{`"end"`}{Align end values with next start values.}
 #' }
 #'
-#' @details The data is first ordered on the `x` aesthetic before run
-#' lengths are calculated for the `label` aesthetic.
+#' @details
+#' The data is first ordered on the `x` aesthetic before run lengths are
+#' calculated for the `label` aesthetic. In contrast to `base::rle()`, `NA`s
+#' are considered equivalent values, not different values.
 #'
 #' @section Aesthetics: `stat_rle()` understands the following
 #'   aesthetics (required aesthetics are in bold)
@@ -112,52 +114,39 @@ StatRle <- ggproto(
   "StatRle",
   Stat,
   required_aes = c("x", "label"),
-  default_aes = aes(xmin = after_stat(start),
-                    xmax = after_stat(end),
-                    ymin = after_stat(-Inf), ymax = after_stat(Inf),
-                    fill = after_stat(runvalue)),
+  default_aes = aes(
+    xmin = after_stat(start),
+    xmax = after_stat(end),
+    ymin = after_stat(-Inf),
+    ymax = after_stat(Inf),
+    fill = after_stat(runvalue)
+  ),
   dropped_aes = c("x", "label"),
   setup_params = function(data, params) {
     params$flipped_aes <- isTRUE(params$orientation == "y")
     params
   },
   extra_params = c("na.rm", "orientation", "align"),
-  compute_layer = function(self, data, params, layout) {
-    if ("label" %in% names(data)) {
-      data[["label"]] <- protect_finite(data[["label"]])
-    }
-    ggproto_parent(Stat, self)$compute_layer(data, params, layout)
-  },
   compute_group = function(data, flipped_aes = FALSE, align, scales) {
-    data$label <- unprotect_finite(data$label)
     data <- data[order(data$x), ]
     n <- nrow(data)
 
-    is_factor <- is.factor(data$label)
-    if (is_factor) {
-      lvls <- levels(data$label)
-    }
-    run <- rle(as.character(data$label))
+    run <- vec_unrep(data$label)
 
-    start_id <- {end_id <- cumsum(run$lengths)} - run$lengths + 1
+    start_id <- {end_id <- cumsum(run$times)} - run$times + 1
 
     if (align == "centre") {
       start <- (data$x[pmax(start_id, 1L)] + data$x[pmax(start_id - 1, 1L)]) / 2
-      end <- (data$x[pmin(end_id, n)] + data$x[pmin(end_id + 1, n)]) / 2
+      end   <- (data$x[pmin(end_id,   n)]  + data$x[pmin(end_id   + 1, n)])  / 2
     } else if (align == "end") {
       start <- data$x[pmax(start_id - 1, 1L)]
-      end <- data$x[end_id]
+      end   <- data$x[end_id]
     } else if (align == "start") {
       start <- data$x[start_id]
-      end <- data$x[pmin(end_id + 1, n)]
+      end   <- data$x[pmin(end_id + 1, n)]
     } else {
       start <- data$x[start_id]
-      end <- data$x[end_id]
-    }
-
-    values <- run$values
-    if (is_factor) {
-      values <- factor(values, levels = lvls)
+      end   <- data$x[end_id]
     }
 
     data_frame0(
@@ -165,42 +154,9 @@ StatRle <- ggproto(
       end       = end,
       start_id  = start_id,
       end_id    = end_id,
-      run_id    = seq_along(run$values),
-      runlength = run$lengths,
-      runvalue  = run$values
+      run_id    = seq_along(run$key),
+      runlength = run$times,
+      runvalue  = run$key
     )
   }
 )
-
-# Helpers -----------------------------------------------------------------
-
-# This is a bit of an ugly solution to let the label variable not be counted as
-# a non-finite variable.
-
-#' @export
-#' @usage NULL
-#' @rdname stat_rle
-vec_math.finite_type <- function(.fn, .x, ...) {
-  switch(.fn,
-         is.finite = !is.na(.x),
-         cli::cli_abort("not implemented")
-  )
-}
-
-protect_finite <- function(x) {
-  attrs <- attributes(x)
-  oldclass <- class(x)
-  attrs <- attrs[setdiff(names(attrs), "class")]
-  do.call(new_vctr, c(`.data` = list(x),
-                      attrs, oldclass = oldclass,
-                      class = "finite_type"))
-}
-
-unprotect_finite <- function(x) {
-  if (!inherits(x, "finite_type")) {
-    return(x)
-  }
-  class(x) <- attr(x, "oldclass")
-  attr(x, "oldclass") <- NULL
-  x
-}

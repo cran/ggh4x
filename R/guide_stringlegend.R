@@ -1,7 +1,11 @@
 #' String legend
 #'
+#' `r lifecycle::badge("questioning")`
 #' This type of legend shows colour and fill mappings as coloured text. It does
 #' not draw keys as `guide_legend()` does.
+#' The function is questioned due to
+#' a possible migration of guide functions after ggplot2 releases a new guide
+#' system.
 #'
 #' @inheritParams ggplot2::guide_legend
 #' @param family A `character(1)` setting a font family for labels.
@@ -101,6 +105,28 @@ guide_stringlegend <- function(
     ),
     class = c("guide", "stringlegend", "legend")
   )
+}
+
+#' @export
+#' @method guide_train stringlegend
+#' @noRd
+guide_train.stringlegend <- function(guide, scale, aesthetic) {
+  if (utils::packageVersion("ggplot2") <= "3.4.2") {
+    return(NextMethod())
+  }
+  legend <- guide_legend()
+  legend$train(guide, scale, aesthetic)
+}
+
+#' @export
+#' @method guide_geom stringlegend
+#' @noRd
+guide_geom.stringlegend <- function(guide, layers, ...) {
+  if (utils::packageVersion("ggplot2") <= "3.4.2") {
+    return(NextMethod())
+  }
+  legend <- guide_legend()
+  legend$get_layer_key(guide, layers)
 }
 
 #' @method guide_gengrob stringlegend
