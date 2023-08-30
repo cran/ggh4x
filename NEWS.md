@@ -1,3 +1,7 @@
+# ggh4x 0.2.6
+
+Hot fix for release of ggplot2 3.4.3. There are no user-visible changes.
+
 # ggh4x 0.2.5
 
 This is a small release for future compatibility with ggplot2, along with some

@@ -1,6 +1,6 @@
 Package: ggh4x
 Title: Hacks for 'ggplot2'
-Version: 0.2.5
+Version: 0.2.6
 Authors@R: 
     person(given = "Teun",
            family = "van den Brand",
@@ -45,8 +45,8 @@ Collate: 'borrowed_ggplot2.R' 'conveniences.R' 'ggh4x_extensions.R'
         'strip_split.R' 'themes.R' 'utils.R' 'utils_grid.R'
         'utils_gtable.R'
 NeedsCompilation: no
-Packaged: 2023-07-15 13:15:17 UTC; teunv
+Packaged: 2023-08-30 18:29:45 UTC; teunv
 Author: Teun van den Brand [aut, cre] (<https://orcid.org/0000-0002-9335-7468>)
 Maintainer: Teun van den Brand <tahvdbrand@gmail.com>
 Repository: CRAN
-Date/Publication: 2023-07-15 13:50:02 UTC
+Date/Publication: 2023-08-30 19:10:06 UTC
