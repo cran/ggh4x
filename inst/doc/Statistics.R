@@ -1,4 +1,4 @@
-## ---- include = FALSE---------------------------------------------------------
+## ----include = FALSE----------------------------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -24,7 +24,7 @@ ggplot(df, aes(eruptions, colour = group)) +
                geom = "line", position = "identity") +
   geom_rug()
 
-## ---- fig.width = 3, fig.show='hold'------------------------------------------
+## ----fig.width = 3, fig.show='hold'-------------------------------------------
 tdist <- data.frame(
   x = c(rt(1000, df = 2), rt(1000, df = 4)),
   group = rep(LETTERS[1:2], each = 1000)
@@ -41,7 +41,7 @@ fdist <- data.frame(
 ggplot(fdist, aes(x, colour = group)) +
   stat_theodensity(distri = "f", start.arg = list(df1 = 3, df2 = 3))
 
-## ---- error = TRUE, fig.show='hold'-------------------------------------------
+## ----error = TRUE, fig.show='hold'--------------------------------------------
 correct <- data.frame(
   x = c(rpois(1000, 5), rnbinom(1000, 2, mu = 5)),
   group = rep(LETTERS[1:2], each = 1000)
@@ -102,7 +102,7 @@ ggplot(df, aes(x)) +
                        colour = "Cauchy"), 
                    distri = "cauchy")
 
-## ---- echo = FALSE------------------------------------------------------------
+## ----echo = FALSE-------------------------------------------------------------
 set.seed(0)
 df <- data.frame(
   x = runif(100, -5, 5),
@@ -186,7 +186,7 @@ g + stat_difference(
   alpha  = 0.8
 )
 
-## ---- fig.show='hold', fig.width = 3------------------------------------------
+## ----fig.show='hold', fig.width = 3-------------------------------------------
 df <- data.frame(
   x = c(1:4), ymin = c(0, 1, 2, 2.5), ymax = c(2.5, 2, 1, 0.5)
 )
@@ -226,7 +226,7 @@ ggplot(df, aes(waiting, eruptions, group = group)) +
                 geom = "segment", crop_other = FALSE) +
   geom_point(size = 0.25)
 
-## ---- echo = FALSE------------------------------------------------------------
+## ----echo = FALSE-------------------------------------------------------------
 x <- rep(LETTERS[1:4], 4:1)
 x <- rle(x)
 

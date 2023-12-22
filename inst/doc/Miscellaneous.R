@@ -1,4 +1,4 @@
-## ---- include = FALSE---------------------------------------------------------
+## ----include = FALSE----------------------------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -57,7 +57,7 @@ ggplot(diamonds, aes(price, carat, colour = clarity)) +
   geom_point(shape = ".") +
   scale_colour_brewer(palette = "Dark2", guide = "stringlegend")
 
-## ---- fig.show='hold', fig.width = 3------------------------------------------
+## ----fig.show='hold', fig.width = 3-------------------------------------------
 p <- ggplot(mpg, aes(displ, hwy)) +
   geom_point(aes(colour = class))
 
@@ -66,7 +66,7 @@ p + guides(colour = guide_stringlegend(face = "bold", spacing = 15))
 p + guides(colour = guide_stringlegend(spacing.x = 0, spacing.y = 5,
                                        family = "mono", ncol = 2))
 
-## ---- fig.show='hold', fig.width = 3------------------------------------------
+## ----fig.show='hold', fig.width = 3-------------------------------------------
 set.seed(0)
 df <- data.frame(
   x = 1:10,
@@ -86,7 +86,7 @@ ggplot(pressure, aes(temperature, pressure)) +
 ## -----------------------------------------------------------------------------
 p + coord_polar(theta = "y")
 
-## ---- fig.show='hold', fig.width = 3------------------------------------------
+## ----fig.show='hold', fig.width = 3-------------------------------------------
 df <- data.frame(
   x = as.vector(row(volcano)),
   y = as.vector(col(volcano)),

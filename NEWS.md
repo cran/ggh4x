@@ -1,3 +1,14 @@
+# ggh4x 0.2.7
+
+This is a small release for future compatibility with ggplot2, along with some
+bugfixes.
+
+* Anticipatory changes for ggplot2 3.5.0.
+* `force_panelsizes()` can now take 'bigpts' units as `total_width` or `total_height` 
+  arguments (#118)
+* Fixed bug in `facet_nested()` when `margins = TRUE` (#121)
+* Fix bug related to mixing standard scales and facetted scales (#137)
+
 # ggh4x 0.2.6
 
 Hot fix for release of ggplot2 3.4.3. There are no user-visible changes.

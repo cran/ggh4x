@@ -1,3 +1,5 @@
+skip_if(packageVersion("ggplot2") >= "3.5.0")
+
 base <- ggplot(msleep, aes(bodywt, brainwt)) +
   geom_point(na.rm = T)
 
@@ -102,22 +104,3 @@ test_that("NULL breaks return zeroGrob as labels", {
   expect_s3_class(g, "zeroGrob")
 })
 
-test_that("guide_axis_logticks errors upon misuse", {
-  rlang::local_options(lifecycle_verbosity = "quiet")
-
-  g <- ggplot(iris, aes(Sepal.Width, Sepal.Length)) +
-    geom_point(aes(colour = Species)) +
-    scale_colour_discrete(guide = "axis_logticks")
-
-  if (!new_guide_system) {
-    expect_snapshot_error(ggplotGrob(g))
-  } else {
-    expect_snapshot_warning(ggplotGrob(g))
-  }
-
-  gui <- guide_axis_logticks()
-  gui$available_aes <- "z"
-
-  g <- base + scale_x_continuous(guide = gui)
-  expect_snapshot_warning(ggplotGrob(g))
-})
