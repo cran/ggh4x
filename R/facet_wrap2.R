@@ -38,8 +38,12 @@
 #'   and columns containing no panels. When `FALSE`, the `nrow` and `ncol`
 #'   arguments are taken literally, even when there are more than needed to
 #'   fit all panels.
-#' @param strip An object created by a call to a strip function, such as
-#'   [`strip_vanilla`][strip_vanilla()].
+#' @param strip A strip specification as one of the following:
+#'   * An object inheriting from `<Strip>`, such as an object created with
+#'     `strip_vanilla()`.
+#'   * A strip function, i.e. `strip_vanilla`.
+#'   * A string giving such function without the `strip_`-prefix,
+#'     i.e. `"vanilla"`.
 #'
 #' @return A `Facet` ggproto object that can be added to a plot.
 #' @export
@@ -68,7 +72,7 @@ facet_wrap2 <- function(
   as.table = TRUE, drop = TRUE,
   dir = "h", strip.position = "top",
   trim_blank = TRUE,
-  strip = strip_vanilla()
+  strip = "vanilla"
 ) {
   new_wrap_facets(
     facets, nrow, ncol,
@@ -92,36 +96,20 @@ new_wrap_facets <- function(
   trim_blank,
   params = list(), super = FacetWrap2
 ) {
-  # Check arguments
-  labeller <- check_labeller(labeller)
-  strip.position <- arg_match0(
-    strip.position, c("top", "bottom", "left",  "right")
-  )
-  dir <- arg_match0(dir, c("h", "v"))
-  free  <- .match_facet_arg(scales, c("fixed", "free_x", "free_y", "free"))
+  prototype <- facet_wrap(
+    facets = facets, nrow = nrow, ncol = ncol,
+    scales = scales, shrink = shrink, labeller = labeller,
+    as.table = as.table, drop = drop, dir = dir,
+    strip.position = strip.position
+  )$params
   axes  <- .match_facet_arg(axes,   c("margins", "x", "y", "all"))
   rmlab <- .match_facet_arg(rmlab,  c("none", "x", "y", "all"))
-  strip <- assert_strip(strip)
+  strip <- resolve_strip(strip)
 
-  # Setup facet variables
-  facets   <- .int$wrap_as_facets_list(facets)
-
-  # Setup dimensions
-  if (identical(dir, "v")) {
-    tmp  <- ncol
-    ncol <- nrow
-    nrow <- tmp
-  }
-  dim <- if (trim_blank) NULL else c(nrow %||% NA, ncol %||% NA)
+  dim <- if (trim_blank) NULL else c(prototype$nrow %||% NA, prototype$ncol %||% NA)
 
   # Make list of parameters
-  params <- c(params, list(
-    facets = facets, free = free, as.table = as.table,
-    strip.position = strip.position, drop = drop,
-    ncol = ncol, nrow = nrow, dim = dim,
-    labeller = labeller, dir = dir,
-    axes = axes, rmlab = rmlab
-  ))
+  params <- c(prototype, params, list(dim = dim, axes = axes, rmlab = rmlab))
 
   ggproto(
     NULL, super,
@@ -415,7 +403,7 @@ purge_guide_labels <- function(guide) {
 
   dim <- dim(axis)
   is_label <- vapply(axis$grobs, inherits, logical(1),
-                     what = c("titleGrob", "richtext_grob"))
+                     what = c("titleGrob", "richtext_grob", "zeroGrob"))
 
   axis$layout <- axis$layout[!is_label, , drop = FALSE]
   axis$grobs <- axis$grobs[!is_label]

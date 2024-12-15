@@ -6,27 +6,13 @@
 \usage{
 guide_stringlegend(
   title = waiver(),
-  title.position = NULL,
-  title.theme = NULL,
-  title.hjust = NULL,
-  title.vjust = NULL,
-  label.theme = NULL,
-  label.hjust = NULL,
-  label.vjust = NULL,
-  family = NULL,
-  face = NULL,
-  size = NULL,
-  spacing.x = NULL,
-  spacing.y = NULL,
-  spacing = NULL,
-  default.units = "pt",
+  theme = NULL,
+  position = NULL,
   direction = NULL,
   nrow = NULL,
   ncol = NULL,
-  byrow = FALSE,
   reverse = FALSE,
-  order = 0,
-  ...
+  order = 0
 )
 }
 \arguments{
@@ -35,55 +21,18 @@ If \code{NULL}, the title is not shown. By default
 (\code{\link[ggplot2:waiver]{waiver()}}), the name of the scale object or the name
 specified in \code{\link[ggplot2:labs]{labs()}} is used for the title.}
 
-\item{title.position}{A character string indicating the position of a
-title. One of "top" (default for a vertical guide), "bottom", "left"
-(default for a horizontal guide), or "right."}
+\item{theme}{A \code{\link[ggplot2:theme]{theme}} object to style the guide individually or
+differently from the plot's theme settings. The \code{theme} argument in the
+guide overrides, and is combined with, the plot's theme.}
 
-\item{title.theme}{A theme object for rendering the title text. Usually the
-object of \code{\link[ggplot2:element_text]{element_text()}} is expected. By default, the theme is
-specified by \code{legend.title} in \code{\link[ggplot2:theme]{theme()}} or theme.}
-
-\item{title.hjust}{A number specifying horizontal justification of the
-title text.}
-
-\item{title.vjust}{A number specifying vertical justification of the title
-text.}
-
-\item{label.theme}{A theme object for rendering the label text. Usually the
-object of \code{\link[ggplot2:element_text]{element_text()}} is expected. By default, the theme is
-specified by \code{legend.text} in \code{\link[ggplot2:theme]{theme()}}.}
-
-\item{label.hjust}{A numeric specifying horizontal justification of the
-label text. The default for standard text is 0 (left-aligned) and 1
-(right-aligned) for expressions.}
-
-\item{label.vjust}{A numeric specifying vertical justification of the label
-text.}
-
-\item{family}{A \code{character(1)} setting a font family for labels.}
-
-\item{face}{A \code{character(1)} setting a font face for labels. One of the
-following: \code{"plain"}, \code{"italic"} or \code{"bold"},
-\code{"bold.italic"}.}
-
-\item{size}{A \code{numeric(1)} setting the label text size in pts.}
-
-\item{spacing.x, spacing.y, spacing}{A \code{numeric(1)} or \code{unit} for the
-spacing between label rows and columns. Internally defaults to half the
-size of the title.}
-
-\item{default.units}{A \code{character(1)} indicating the default units to
-use if the \verb{spacing.*} arguments are only given as numeric vectors.}
+\item{position}{A character string indicating where the legend should be
+placed relative to the plot panels.}
 
 \item{direction}{A character string indicating the direction of the guide.
 One of "horizontal" or "vertical."}
 
-\item{nrow}{The desired number of rows of legends.}
-
-\item{ncol}{The desired number of column of legends.}
-
-\item{byrow}{logical. If \code{FALSE} (the default) the legend-matrix is
-filled by columns, otherwise the legend-matrix is filled by rows.}
+\item{nrow, ncol}{The desired number of rows and column of legends
+respectively.}
 
 \item{reverse}{logical. If \code{TRUE} the order of legends is reversed.}
 
@@ -91,19 +40,13 @@ filled by columns, otherwise the legend-matrix is filled by rows.}
 this guide among multiple guides. This controls the order in which
 multiple guides are displayed, not the contents of the guide itself.
 If 0 (default), the order is determined by a secret algorithm.}
-
-\item{...}{ignored.}
 }
 \value{
-A \code{guide}, \code{stringlegend} S3 object.
+A \code{GuideStringlegend} object.
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#questioning}{\figure{lifecycle-questioning.svg}{options: alt='[Questioning]'}}}{\strong{[Questioning]}}
 This type of legend shows colour and fill mappings as coloured text. It does
 not draw keys as \code{guide_legend()} does.
-The function is questioned due to
-a possible migration of guide functions after ggplot2 releases a new guide
-system.
 }
 \examples{
 p <- ggplot(mpg, aes(displ, hwy)) +

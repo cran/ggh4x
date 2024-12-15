@@ -170,7 +170,7 @@ Strip <- ggproto(
       if (!new_guide_system) {
         height <- lapply(labels[!zeros], function(x) x$heights[2])
       } else {
-        height <- lapply(labels[!zeros], function(x) sum(x$heights))
+        height <- lapply(labels[!zeros], grobHeight)
       }
       height <- lapply(split(height, layer_id[!zeros]), max_height)
       height <- do.call(unit.c, height)
@@ -179,7 +179,7 @@ Strip <- ggproto(
       if (!new_guide_system) {
         width <- lapply(labels[!zeros], function(x) x$widths[2])
       } else {
-        width <- lapply(labels[!zeros], function(x) sum(x$widths))
+        width <- lapply(labels[!zeros], grobWidth)
       }
       width <- lapply(split(width, layer_id[!zeros]), max_width)
       width <- do.call(unit.c, width)
@@ -449,15 +449,25 @@ Strip <- ggproto(
   }
 )
 
-
 # Helpers -----------------------------------------------------------------
 
-assert_strip <- function(strip, arg = deparse(substitute(strip))) {
-  is_strip <- inherits(strip, "Strip") && inherits(strip, "ggproto")
-  if (!is_strip) {
-    cli::cli_abort(
-      "The {.arg {arg}} argument is not a valid facet strip specification."
-    )
+resolve_strip <- function(strip, arg = caller_arg(strip), env = caller_env()) {
+  force(arg)
+  orig <- strip
+  if (is.character(strip)) {
+    strip <- find_global(paste0("strip_", strip), env = env, mode = "function")
   }
-  strip
+  if (is.function(strip)) {
+    strip <- strip()
+  }
+  if (inherits(strip, "Strip") && is.ggproto(strip)) {
+    return(strip)
+  }
+  cli::cli_abort(
+    "The {.arg {arg}} argument must be a valid strip specification.",
+    call = env
+  )
 }
+
+# fallback for {deeptime}
+assert_strip <- resolve_strip

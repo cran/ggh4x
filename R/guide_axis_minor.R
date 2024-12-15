@@ -1,13 +1,14 @@
 # User function -----------------------------------------------------------
 
+# nocov start
+
 #' Axis guide with ticks for minor breaks
 #'
-#' `r lifecycle::badge("questioning")`
+#' `r lifecycle::badge("deprecated")`
 #' These are similar the the normal axis guides for position scales, but also
 #' place tickmarks at minor break positions.
-#' The function is questioned due to
-#' a possible migration of guide functions after ggplot2 releases a new guide
-#' system.
+#' The function is deprecated because it can be replaced with
+#' `ggplot2::guide_axis(minor.ticks = TRUE)`.
 #'
 #' @inheritParams guide_axis_truncated
 #'
@@ -16,13 +17,15 @@
 #'
 #'   \describe{
 #'     \item{[`ggh4x.axis.ticks.length.minor`][theme_extensions]}{
-#'       An [`rel()`] object to set the size of minor ticks relative to the
-#'       length of major ticks (`axis.ticks.length`). Defaults to `rel(2/3)`.
+#'       An [`rel()`][ggplot2::rel] object to set the size of minor ticks
+#'       relative to the length of major ticks (`axis.ticks.length`).
+#'       Defaults to `rel(2/3)`.
 #'     }
 #'   }
 #'
 #' @return An *axis_minor* guide class object.
 #' @export
+#' @keywords internal
 #'
 #' @family axis-guides
 #'
@@ -51,6 +54,11 @@ guide_axis_minor <- function(
   trunc_upper = NULL,
   position = waiver()
 ) {
+  lifecycle::deprecate_warn(
+    "0.3.0",
+    "guide_axis_minor()",
+    I("`ggplot2::guide_axis(minor.ticks = TRUE)`")
+  )
   colour <- color %||% colour
   check_trunc_arg(trunc_lower, trunc_upper)
   structure(
@@ -204,6 +212,7 @@ build_axis_ticks_minor <- function(element, length, position, params,
   do.call(element_grob, args)
 }
 
+# nocov end
 
 
 

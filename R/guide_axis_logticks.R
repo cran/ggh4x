@@ -1,14 +1,15 @@
 # User function -----------------------------------------------------------
 
+# nocov start
+
 #' Axis guide with ticks for logarithmic breaks
 #'
-#' `r lifecycle::badge("questioning")`
+#' `r lifecycle::badge("deprecated")`
 #' This axis guide is probably best described as
 #' [ggplot2::annotation_logticks()] but implemented as a guide instead
 #' of a geom. The tick marks probably best suit log10 transformations.
-#' The function is questioned due to
-#' a possible migration of guide functions after ggplot2 releases a new guide
-#' system.
+#' The function is deprecated because ggplot2 implemented a better log tick
+#' axis.
 #'
 #' @inheritParams guide_axis_minor
 #' @param prescaled A `logical` of length one, indicating whether the data
@@ -23,19 +24,21 @@
 #'
 #'   \describe{
 #'     \item{[`ggh4x.axis.ticks.length.minor`][theme_extensions]}{
-#'       An [`rel()`] object to set the size of minor ticks relative to the
-#'       length of major ticks (`axis.ticks.length`). Defaults to `rel(2/3)`.
+#'       An [`rel()`][ggplot2::rel] object to set the size of minor ticks
+#'       relative to the length of major ticks (`axis.ticks.length`).
+#'       Defaults to `rel(2/3)`.
 #'     }
 #'     \item{[`ggh4x.axis.ticks.length.mini`][theme_extensions]}{
-#'       An [`rel()`] object to set the size of smallest ticks, also relative to
-#'       the length of major ticks (`axis.ticks.length`). Defaults to
-#'       `rel(1/3)`.
+#'       An [`rel()`][ggplot2::rel] object to set the size of smallest ticks,
+#'       also relative to the length of major ticks (`axis.ticks.length`).
+#'       Defaults to `rel(1/3)`.
 #'     }
 #'   }
 #'
 #' @return An *axis_logticks* guide class object.
 #' @rawNamespace if (packageVersion("ggplot2") <= "3.5.0") export(guide_axis_logticks)
 #' @family axis-guides
+#' @keywords internal
 #'
 #' @examples
 #' # The guide works well out of the box with log10 scales
@@ -70,6 +73,11 @@ guide_axis_logticks <- function(
   color = NULL,
   base = waiver()
 ) {
+  lifecycle::deprecate_warn(
+    "0.3.0",
+    "ggh4x::guide_axis_logticks()",
+    "ggplot2::guide_axis_logticks()"
+  )
   colour <- color %||% colour
   check_trunc_arg(trunc_lower, trunc_upper)
   structure(list(
@@ -213,3 +221,5 @@ make_logbreaks <- function(base = 10, ticks_per_base = base - 1,
 
   return(tickdf)
 }
+
+# nocov end

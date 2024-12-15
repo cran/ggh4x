@@ -1,3 +1,5 @@
+# nocov start
+
 build_axis_elements <- function(
   axis_position = "b", angle = NULL, theme, colour = NULL
 ) {
@@ -64,7 +66,7 @@ build_axis_labels <- function(
   lapply(dodge_idxs, function(idx) {
     subkey <- key[idx, , drop = FALSE]
     if (check.overlap) {
-      priority <- axis_label_priority(n)
+      priority <- axis_label_priority(nrow(subkey))
       subkey   <- subkey[priority, , drop = FALSE]
     }
     breaks <- subkey[[params$aes]]
@@ -182,3 +184,5 @@ setup_axis_params <- function(axis_position) {
        opposite_axis = axis_opposite,
        vertical = is_vertical)
 }
+
+# nocov end

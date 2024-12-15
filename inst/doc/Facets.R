@@ -205,36 +205,42 @@ scales <- list(
                      minor_breaks = c(2.5, 4.5)),
   scale_x_continuous(breaks = c(2.945, 6),
                      limits = c(0, 10),
-                     guide = "axis_minor")
+                     guide = guide_axis(minor.ticks = TRUE))
 )
 
 p + facet_wrap(vars(drv), scales = "free_x") +
   facetted_pos_scales(x = scales)
 
 ## ----position_scales_formula--------------------------------------------------
+red_axis <- guide_axis(theme = theme(
+  axis.text = element_text(colour = "red"),
+  axis.ticks = element_line(colour = "red")
+))
+
 p +
   facet_wrap(vars(class), nrow = 1, scales = "free_x") +
   xlim(range(mpg$displ)) +
   facetted_pos_scales(x = list(
     COL %% 2 == 0 ~ scale_x_continuous(labels = NULL, limits = xlim),
     class %in% c("midsize", "suv", "subcompact") ~ scale_x_continuous(
-      guide = guide_axis_colour(colour = "red"), limits = xlim
+      guide = red_axis, 
+      limits = xlim
     )
   ))
 
 ## ----eval=FALSE---------------------------------------------------------------
-#  p +
-#    facet_wrap(vars(class), nrow = 1, scales = "free_x") +
-#    xlim(range(mpg$displ)) +
-#    scale_x_facet(
-#      COL %% 2 == 0,
-#      labels = NULL, limits = xlim
-#    ) +
-#    scale_x_facet(
-#      class %in% c("midsize", "suv", "subcompact"),
-#      limits = xlim,
-#      guide = guide_axis_colour(colour = "red")
-#    )
+# p +
+#   facet_wrap(vars(class), nrow = 1, scales = "free_x") +
+#   xlim(range(mpg$displ)) +
+#   scale_x_facet(
+#     COL %% 2 == 0,
+#     labels = NULL, limits = xlim
+#   ) +
+#   scale_x_facet(
+#     class %in% c("midsize", "suv", "subcompact"),
+#     limits = xlim,
+#     guide = red_axis
+#   )
 
 ## ----position_scales_stats, fig.show='hold', fig.width = 3--------------------
 set.seed(0)

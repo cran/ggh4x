@@ -58,15 +58,6 @@ ggplot(diamonds, aes(price, carat, colour = clarity)) +
   scale_colour_brewer(palette = "Dark2", guide = "stringlegend")
 
 ## ----fig.show='hold', fig.width = 3-------------------------------------------
-p <- ggplot(mpg, aes(displ, hwy)) +
-  geom_point(aes(colour = class))
-
-p + guides(colour = guide_stringlegend(face = "bold", spacing = 15))
-
-p + guides(colour = guide_stringlegend(spacing.x = 0, spacing.y = 5,
-                                       family = "mono", ncol = 2))
-
-## ----fig.show='hold', fig.width = 3-------------------------------------------
 set.seed(0)
 df <- data.frame(
   x = 1:10,
@@ -144,10 +135,10 @@ p + coord_axes_inside()
 p + coord_axes_inside(labels_inside = TRUE) +
   scale_x_continuous(
     labels = ~ ifelse(.x == 0, "", .x),
-    guide  = "axis_minor"
+    guide  = guide_axis(minor.ticks = TRUE)
   ) +
   scale_y_continuous(
     labels = ~ ifelse(.x == 0, "", .x),
-    guide  = "axis_truncated"
+    guide  = guide_axis(cap = "both")
   )
 

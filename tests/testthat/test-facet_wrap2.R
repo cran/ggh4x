@@ -48,8 +48,8 @@ nchildren <- function(gt, where) {
 }
 
 test_that("facet_wrap2() can some repeat axes", {
-  case <- p + facet_wrap2(am ~ cyl, axes = "x", dir = "v")
-  ctrl <- p + facet_wrap2(am ~ cyl, axes = "margins", dir = "v")
+  case <- p + facet_wrap2(am ~ cyl, axes = "x", dir = "v", ncol = 2)
+  ctrl <- p + facet_wrap2(am ~ cyl, axes = "margins", dir = "v", ncol = 2)
 
   case <- ggplotGrob(case)
   ctrl <- ggplotGrob(ctrl)
@@ -104,7 +104,7 @@ test_that("facet_wrap2() can remove some labels", {
     expect_equal(nchildren(ctrl2, "b"), rep(2L, 6))
   } else {
     expect_equal(nchildren(case1, "b"), rep(3L, 6))
-    expect_equal(nchildren(case2, "b"), c(3L, 3L, 3L, 2L, 2L, 2L))
+    expect_equal(nchildren(case2, "b"), c(3L, 3L, 3L, 1L, 1L, 1L))
     expect_equal(nchildren(ctrl1, "b"), c(3L, 3L, 3L, 0L, 0L, 0L))
     expect_equal(nchildren(ctrl2, "b"), rep(3L, 6))
   }
@@ -116,7 +116,7 @@ test_that("facet_wrap2() can remove some labels", {
     expect_equal(nchildren(ctrl1, "l"), c(0L, 0L, 0L, 0L, 2L, 2L))
     expect_equal(nchildren(ctrl2, "l"), rep(2L, 6))
   } else {
-    expect_equal(nchildren(case1, "l"), c(2L, 2L, 2L, 2L, 3L, 3L))
+    expect_equal(nchildren(case1, "l"), c(1L, 1L, 1L, 1L, 3L, 3L))
     expect_equal(nchildren(case2, "l"), rep(3L, 6))
     expect_equal(nchildren(ctrl1, "l"), c(0L, 0L, 0L, 0L, 3L, 3L))
     expect_equal(nchildren(ctrl2, "l"), rep(3L, 6))

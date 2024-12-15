@@ -30,14 +30,21 @@ specified in \code{\link[ggplot2:labs]{labs()}} is used for the title.}
 
 \item{angle}{Compared to setting the angle in \code{\link[ggplot2:theme]{theme()}} / \code{\link[ggplot2:element_text]{element_text()}},
 this also uses some heuristics to automatically pick the \code{hjust} and \code{vjust} that
-you probably want.}
+you probably want. Can be one of the following:
+\itemize{
+\item \code{NULL} to take the angles and \code{hjust}/\code{vjust} directly from the theme.
+\item \code{waiver()} to allow reasonable defaults in special cases.
+\item A number representing the text angle in degrees.
+}}
 
 \item{n.dodge}{The number of rows (for vertical axes) or columns (for
 horizontal axes) that should be used to render the labels. This is
 useful for displaying labels that would otherwise overlap.}
 
-\item{order}{Used to determine the order of the guides (left-to-right,
-top-to-bottom), if more than one  guide must be drawn at the same location.}
+\item{order}{A positive \code{integer} of length 1 that specifies the order of
+this guide among multiple guides. This controls in which order guides are
+merged if there are multiple guides for the same position. If 0 (default),
+the order is determined by a secret algorithm.}
 
 \item{position}{Where this guide should be drawn: one of top, bottom,
 left, or right.}
@@ -69,13 +76,12 @@ to use this argument if the base is not \code{10}.}
 An \emph{axis_logticks} guide class object.
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#questioning}{\figure{lifecycle-questioning.svg}{options: alt='[Questioning]'}}}{\strong{[Questioning]}}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 This axis guide is probably best described as
 \code{\link[ggplot2:annotation_logticks]{ggplot2::annotation_logticks()}} but implemented as a guide instead
 of a geom. The tick marks probably best suit log10 transformations.
-The function is questioned due to
-a possible migration of guide functions after ggplot2 releases a new guide
-system.
+The function is deprecated because ggplot2 implemented a better log tick
+axis.
 }
 \section{Theme elements}{
 
@@ -83,13 +89,14 @@ This axis guide uses the following the theme elements:
 
 \describe{
 \item{\code{\link[=theme_extensions]{ggh4x.axis.ticks.length.minor}}}{
-An \code{\link[=rel]{rel()}} object to set the size of minor ticks relative to the
-length of major ticks (\code{axis.ticks.length}). Defaults to \code{rel(2/3)}.
+An \code{\link[ggplot2:element]{rel()}} object to set the size of minor ticks
+relative to the length of major ticks (\code{axis.ticks.length}).
+Defaults to \code{rel(2/3)}.
 }
 \item{\code{\link[=theme_extensions]{ggh4x.axis.ticks.length.mini}}}{
-An \code{\link[=rel]{rel()}} object to set the size of smallest ticks, also relative to
-the length of major ticks (\code{axis.ticks.length}). Defaults to
-\code{rel(1/3)}.
+An \code{\link[ggplot2:element]{rel()}} object to set the size of smallest ticks,
+also relative to the length of major ticks (\code{axis.ticks.length}).
+Defaults to \code{rel(1/3)}.
 }
 }
 }
@@ -123,3 +130,4 @@ Other axis-guides:
 \code{\link{guide_axis_truncated}()}
 }
 \concept{axis-guides}
+\keyword{internal}

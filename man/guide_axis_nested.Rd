@@ -31,14 +31,21 @@ specified in \code{\link[ggplot2:labs]{labs()}} is used for the title.}
 
 \item{angle}{Compared to setting the angle in \code{\link[ggplot2:theme]{theme()}} / \code{\link[ggplot2:element_text]{element_text()}},
 this also uses some heuristics to automatically pick the \code{hjust} and \code{vjust} that
-you probably want.}
+you probably want. Can be one of the following:
+\itemize{
+\item \code{NULL} to take the angles and \code{hjust}/\code{vjust} directly from the theme.
+\item \code{waiver()} to allow reasonable defaults in special cases.
+\item A number representing the text angle in degrees.
+}}
 
 \item{n.dodge}{The number of rows (for vertical axes) or columns (for
 horizontal axes) that should be used to render the labels. This is
 useful for displaying labels that would otherwise overlap.}
 
-\item{order}{Used to determine the order of the guides (left-to-right,
-top-to-bottom), if more than one  guide must be drawn at the same location.}
+\item{order}{A positive \code{integer} of length 1 that specifies the order of
+this guide among multiple guides. This controls in which order guides are
+merged if there are multiple guides for the same position. If 0 (default),
+the order is determined by a secret algorithm.}
 
 \item{position}{Where this guide should be drawn: one of top, bottom,
 left, or right.}
@@ -72,14 +79,13 @@ nesting lines relative to the smallest difference in break positions.}
 A \emph{axis_nested} guide class object.
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#questioning}{\figure{lifecycle-questioning.svg}{options: alt='[Questioning]'}}}{\strong{[Questioning]}}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 Discrete position scales containing interacting factors can be visualised
 more clearly with a nested axis guide. Nested axis guides separate labels
 based on a delimiter and groups identical later labels, indicating the
 grouping with a line spanning the earlier labels.
-The function is questioned due to
-a possible migration of guide functions after ggplot2 releases a new guide
-system.
+The function is deprecated due to superior alternatives such as
+\code{legendry::guide_axis_nested()}.
 }
 \details{
 The guide itself makes no effort to group and order labels. To get
@@ -92,12 +98,12 @@ This axis guide uses the following the theme elements:
 
 \describe{
 \item{\code{\link[=theme_extensions]{ggh4x.axis.nestline.x/y}}}{
-An \code{\link[=element_line]{element_line()}} object to alter the display of the line
-separating different layers of labels.
+An \code{\link[ggplot2:element]{element_line()}} object to alter the
+display of the line separating different layers of labels.
 }
 \item{\code{\link[=theme_extensions]{ggh4x.axis.nesttext.x/y}}}{
-An \code{\link[=element_text]{element_text()}} object to differentiate text higher up in the
-hierarchy, from the text closest to the axis line.
+An \code{\link[ggplot2:element]{element_text()}} object to differentiate
+text higher up in the hierarchy, from the text closest to the axis line.
 }
 }
 }
@@ -138,3 +144,4 @@ Other axis-guides:
 \code{\link{guide_axis_truncated}()}
 }
 \concept{axis-guides}
+\keyword{internal}

@@ -42,6 +42,7 @@ ggplot(fdist, aes(x, colour = group)) +
   stat_theodensity(distri = "f", start.arg = list(df1 = 3, df2 = 3))
 
 ## ----error = TRUE, fig.show='hold'--------------------------------------------
+try({
 correct <- data.frame(
   x = c(rpois(1000, 5), rnbinom(1000, 2, mu = 5)),
   group = rep(LETTERS[1:2], each = 1000)
@@ -56,6 +57,7 @@ ggplot(incorrect, aes(x, colour = group)) +
 
 ggplot(correct, aes(x, colour = group)) +
   stat_theodensity(distri = "nbinom")
+})
 
 ## -----------------------------------------------------------------------------
 ggplot(correct, aes(x, colour = group)) +

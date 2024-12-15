@@ -12,25 +12,35 @@ seq_ncol <- function(dat) {
   seq_len(NCOL(dat))
 }
 
-# ggplot internals --------------------------------------------------------
-
-# Function for grabbing internal function of ggplot2 that are also used here.
-# While most of these are now covered in the borrowed_ggplot2.R file, there
-# are some functions that weren't so easy to copy, which remain below.
-.grab_ggplot_internals <- function() {
-  objects <- c(
-    # too rabbithole-complex to manually copy
-    "grid_as_facets_list",
-    "wrap_as_facets_list"
-  )
-  objects <- setNames(objects, objects)
-  out <- lapply(objects, function(i) {
-    getFromNamespace(i, "ggplot2")
-  })
+width_cm <- function(x) {
+  if (is.grob(x)) {
+    convertWidth(grobWidth(x), "cm", TRUE)
+  } else if (is.unit(x)) {
+    convertWidth(x, "cm", TRUE)
+  } else if (is.list(x)) {
+    vapply(x, width_cm, numeric(1))
+  } else {
+    cli::cli_abort("Unknown input: {.obj_type_friendly {x}}.")
+  }
 }
 
-# Store the needed ggplot internals here
-.int <- .grab_ggplot_internals()
+height_cm <- function(x) {
+  if (is.grob(x)) {
+    convertHeight(grobHeight(x), "cm", TRUE)
+  } else if (is.unit(x)) {
+    convertHeight(x, "cm", TRUE)
+  } else if (is.list(x)) {
+    vapply(x, height_cm, numeric(1))
+  } else {
+    cli::cli_abort("Unknown input: {.obj_type_friendly {x}}.")
+  }
+}
+
+fixup_docs <- function(x) {
+  gsub("\\[=aes", "\\[ggplot2:aes", x)
+}
+
+# ggplot internals --------------------------------------------------------
 
 data_frame0 <- function(...) {data_frame(..., .name_repair = "minimal")}
 

@@ -31,8 +31,10 @@ specified in \code{\link[ggplot2:labs]{labs()}} is used for the title.}
 horizontal axes) that should be used to render the labels. This is
 useful for displaying labels that would otherwise overlap.}
 
-\item{order}{Used to determine the order of the guides (left-to-right,
-top-to-bottom), if more than one  guide must be drawn at the same location.}
+\item{order}{A positive \code{integer} of length 1 that specifies the order of
+this guide among multiple guides. This controls in which order guides are
+merged if there are multiple guides for the same position. If 0 (default),
+the order is determined by a secret algorithm.}
 
 \item{position}{Where this guide should be drawn: one of top, bottom,
 left, or right.}
@@ -62,9 +64,11 @@ by \code{\link[ggdendro:dendro_data]{ggdendro::dendro_data()}}.}
 A \emph{dendroguide} class object.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 Visual representation of a discrete variable with hierarchical relationships
 between members, like those detailed in
-\code{\link[=scale_x_dendrogram]{scale_(x|y)_dendrogram)()}}.
+\code{\link[=scale_x_dendrogram]{scale_(x|y)_dendrogram)()}}. This function is
+deprecated in favour of \code{legendry::guide_axis_dendro()}.
 }
 \details{
 The dendrogram guide inherits graphical elements from the
@@ -93,3 +97,4 @@ g + theme(axis.ticks = element_line(colour = "red"))
 # The size of the dendrogram is controlled through tick size * 10
 g + theme(axis.ticks.length = unit(5, "pt"))
 }
+\keyword{internal}
