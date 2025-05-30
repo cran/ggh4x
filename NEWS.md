@@ -1,3 +1,11 @@
+# ggh4x 0.3.1
+
+This is a patch release with no new features or bug fixes.
+
+* Maintaining compatibility with ggplot2
+* The functions that were deprecated in 0.3.0 now return 'unflavoured' variants.
+  For example `guide_axis_nested()` will just return `guide_axis()`.
+
 # ggh4x 0.3.0
 
 This is a new minor release, introducing a few small features, bug fixes and 
